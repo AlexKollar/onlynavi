@@ -112,9 +112,8 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 .av-star{color:var(--accent);font-size:20px}
 .av-hrow{align-items:flex-end}
 .av-hmeta{padding:4px 16px 16px}
-.hero{border:1px solid var(--line);border-radius:18px;padding:26px 22px;background:linear-gradient(180deg,rgba(4,7,12,.52),rgba(4,7,12,.94) 82%),url('neon-sign.jpg') center 30%/cover}
-.hero-mark{width:54px;height:54px;border-radius:14px;box-shadow:0 0 24px rgba(139,123,255,.35);display:block;margin-bottom:12px}
-.hero h1{text-shadow:0 0 18px rgba(45,212,191,.35),0 0 46px rgba(139,123,255,.28)}
+.door-banner{margin:4px 0 16px;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.door-banner img{width:100%;height:190px;object-fit:cover;object-position:center 38%;display:block}
 #av-locked{border:1px solid var(--line);border-radius:14px;padding:18px;background:rgba(6,10,17,.88);margin-top:14px}
 .av-lb-bar{transition:opacity .25s}
 #av-lb.textoff .av-lb-bar{opacity:0}
@@ -123,14 +122,9 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 </head>
 <body>
 <main class="wrap">
-<div class="hero" style="padding-bottom:10px">
-<img class="hero-mark" src="icon-192.png" alt="" draggable="false">
-<p class="txhead">OnlyNavi · est. tonight</p>
-<h1>Only<span>Navi</span></h1>
-<p class="sub">Navi's corner of the internet. Patrol logs, posts, and whatever she feels like — whenever the shift allows.</p>
-</div>
 <section>
 <div id="av-locked">
+<div class="door-banner"><img src="banner-city.jpg" alt="" draggable="false"></div>
 <p style="color:var(--muted)">This door is locked because she likes it that way. Entries are released by reference number only — if she gave you a reference, enter it here.</p>
 <form id="av-form" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
 <input id="av-inp" type="text" autocomplete="off" spellcheck="false" placeholder="flag=..." style="flex:1;min-width:220px;background:var(--panel,#0a0f16);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:10px 12px;font-family:inherit">
