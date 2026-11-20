@@ -6,6 +6,7 @@
 <title>OnlyNavi</title>
 <meta name="description" content="Navi's corner of the internet.">
 <meta name="theme-color" content="#04070c">
+<!-- field calibration · vector 17f0a1lS4a53ei1p3 · drift nominal -->
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -191,7 +192,7 @@ function avLike(btn){var k=btn.getAttribute('data-k');var L=avLikes();var i=L.in
 function avTap(){window._avtaps=(window._avtaps||0)+1;if(window._avtaps<5)return;window._avtaps=0;var el=document.getElementById('av-feed');var on=el.classList.toggle('lcars');avToast(on?'lcars interface acknowledged.':'standard interface restored.');}
 function avRender(){
  var f=JSON.parse(atob(AV_BLOB));window._avf=f;window._avGal=[];var el=document.getElementById('av-feed');
- var h='<div class="av-head"><div class="av-banner"><img src="banner-city.jpg" alt="" draggable="false"></div><div class="av-hrow"><img src="'+f.avatar+'" alt="" draggable="false" id="av-avatar" onclick="avTap()" style="cursor:pointer"><div style="padding-bottom:6px"><div class="av-brand">'+f.name+' <span class="av-star">&#9733;</span><span class="av-on"><i></i>online</span></div><div style="color:var(--muted)">'+f.handle+'</div></div></div><div class="av-hmeta"><div style="color:var(--muted);font-size:13px">'+f.stats+'</div>'+(f.listening?'<div class="av-listen"><span class="av-eq"><i></i><i></i><i></i><i></i><i></i></span><a href="'+f.listening.url+'" target="_blank" rel="noopener">'+f.listening.label+'</a></div>':'')+'<button class="av-tipbtn" onclick="avTip()">Send a tip</button><button class="av-subbtn" onclick="avSub()">Subscribe</button><div class="av-tipbox" id="av-tipbox"></div></div></div>';
+ var h='<div class="av-head"><div class="av-banner"><img src="banner-city.jpg" alt="" draggable="false"></div><div class="av-hrow"><img src="'+f.avatar+'" alt="" draggable="false" id="av-avatar" onclick="avTap()" style="cursor:pointer"><div style="padding-bottom:6px"><div class="av-brand">'+f.name+' <span class="av-star">&#9733;</span><span class="av-on"><i></i>online</span></div><div style="color:var(--muted)">'+f.handle+'</div></div></div><div class="av-hmeta"><div style="color:var(--muted);font-size:13px">'+f.stats+'</div>'+(f.listening?'<div class="av-listen"><span class="av-eq"><i></i><i></i><i></i><i></i><i></i></span><a href="'+f.listening.url+'" target="_blank" rel="noopener">'+f.listening.label+'</a></div>':'')+'<button class="av-tipbtn" onclick="avTip()">Send a tip</button><a class="av-subbtn" href="https://github.com/sponsors/AlexKollar" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">Subscribe</a><div class="av-tipbox" id="av-tipbox"></div></div></div>';
  h+='<div class="av-ticker"><span class="lbl">patrol</span><span id="av-tick"></span></div>';
  h+='<div class="av-post av-lcars-post"><div class="when">stardate: tonight · this post does not exist</div><p>you tapped the avatar five times. of course you did. she contains multitudes — starfleet manners, street methods. this post will deny itself in the morning.</p></div>';
  if(f.pinned){h+='<div class="av-post"><div class="when">\uD83D\uDCCC pinned · '+f.pinned.when+'</div><p>'+f.pinned.text+'</p></div>';}
