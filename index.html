@@ -26,7 +26,7 @@
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.55;-webkit-text-size-adjust:100%}
-#koi-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+#mesh-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 .wrap{max-width:720px;margin:0 auto;padding:28px 16px 64px;position:relative;z-index:1}
 .hero{padding:18px 0 4px}
 .txhead{color:var(--accent);letter-spacing:.28em;font-size:12px;text-transform:uppercase;margin:0}
@@ -195,7 +195,7 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 </style>
 </head>
 <body>
-<canvas id="koi-canvas" aria-hidden="true"></canvas>
+<canvas id="mesh-canvas" aria-hidden="true"></canvas>
 <main class="wrap">
 <section>
 <div id="av-locked">
@@ -414,12 +414,12 @@ if(avpf)avpf.addEventListener('submit',function(e){e.preventDefault();var v=docu
 (function(){function upd(){try{if(!window.NaviRotation)return;var a=document.querySelector('.av-listen a');if(!a)return;var m=NaviRotation.musicNow(Date.now()/1000);var label=m.artist+' - '+m.title;if(a.textContent!==label){a.textContent=label;}if(a.getAttribute('href')!==m.url){a.setAttribute('href','https://open.spotify.com/playlist/7C3XSKZH5FcAF9CH5PLwSl');}}catch(e){}}setInterval(upd,5000);setTimeout(upd,800);})();
 </script>
 <script>
-/* Holographic koi — faint projections drifting in the deep behind the page.
-   Canvas 2D, no assets. Depth sets size, speed and alpha; bodies bend on a
-   travelling sine wave; fills are iridescent gradients composited 'lighter'
-   so they glow on dark water and ghost through the glass panels. */
+/* The Living Mesh — her network as weather. Nodes keep station around slow
+   Lissajous anchors (bounded by construction, nothing integrates away),
+   links kindle between neighbours, and bright pulses ride the links like
+   packets finding a route. Canvas 2D, no assets, faint by design. */
 (function () {
-  var cv = document.getElementById('koi-canvas');
+  var cv = document.getElementById('mesh-canvas');
   if (!cv) return;
   var ctx = cv.getContext('2d');
   var W = 0, H = 0;
@@ -437,137 +437,101 @@ if(avpf)avpf.addEventListener('submit',function(e){e.preventDefault();var v=docu
   var TAU = Math.PI * 2;
   function rnd(a, b) { return a + Math.random() * (b - a); }
 
-  function Koi(seed) {
-    this.depth = Math.random();                    // 0 far .. 1 near
-    this.len = 46 + this.depth * 115;              // body length, px
-    this.x = rnd(-80, Math.max(W, 320) + 80);
-    this.home = rnd(0.12, 0.88);                 // the stratum this fish keeps
-    this.bobAmp = rnd(0.008, 0.02);              // lazy porpoising, fraction of screen
-    this.bobFreq = TAU / rnd(9000, 17000);       // one swell every 9-17 s
-    this.driftAmp = rnd(0.04, 0.10);             // slow migration of the stratum itself
-    this.driftFreq = TAU / rnd(100000, 200000);  // over minutes, not seconds
-    this.y = this.home;
-    this.pitch = 0;
-    this.dir = Math.random() < 0.5 ? 1 : -1;       // cruise right or left
-    this.speed = (0.16 + this.depth * 0.34) * this.dir;
-    this.phase = rnd(0, TAU);
-    this.wob = rnd(0.5, 0.95);
-    this.seed = seed * 1.71 + rnd(0, 10);
-    this.hue = rnd(0, 360);
-    this.alpha = 0.05 + this.depth * 0.11;         // faint by design
+  function Node(i) {
+    this.hx = Math.random();                       // anchor, fraction of viewport
+    this.hy = Math.random();
+    this.rx = rnd(14, 52);                          // slow orbit radii, px
+    this.ry = rnd(10, 40);
+    this.ax = TAU / rnd(26000, 52000);              // one lap every ~26-52 s
+    this.ay = TAU / rnd(26000, 52000);
+    this.px = rnd(0, TAU);
+    this.py = rnd(0, TAU);
+    this.hub = i < 2;                               // two gateways burn a little brighter
+    this.violet = !this.hub && Math.random() < 0.22;
+    this.r = this.hub ? rnd(2.4, 3.0) : rnd(1.1, 2.1);
+    this.flare = 0;
+    this.x = 0; this.y = 0;
   }
-
-  Koi.prototype.step = function (t) {
-    this.x += this.speed;
-    // Depth is a bounded composition, not an integrated velocity: a slow
-    // stratum drift plus a small porpoising swell around it. A koi holds
-    // its water; it cannot climb or sink away.
-    var stratum = this.home + Math.sin(t * this.driftFreq + this.seed * 3.1) * this.driftAmp;
-    var swell = Math.sin(t * this.bobFreq + this.seed * 5.3) * this.bobAmp;
-    this.y = Math.min(0.96, Math.max(0.04, stratum + swell));
-    // Pitch follows the true vertical rate so the nose leads the motion.
-    var vy = Math.cos(t * this.bobFreq + this.seed * 5.3) * this.bobAmp * this.bobFreq * 1000
-           + Math.cos(t * this.driftFreq + this.seed * 3.1) * this.driftAmp * this.driftFreq * 1000;
-    var target = Math.max(-0.09, Math.min(0.09, vy * 9));
-    this.pitch += (target - this.pitch) * 0.03;
-    var m = this.len * 1.7;
-    if (this.dir > 0 && this.x > W + m) { this.x = -m; this.home = rnd(0.12, 0.88); }
-    if (this.dir < 0 && this.x < -m) { this.x = W + m; this.home = rnd(0.12, 0.88); }
-    this.phase += 0.05 + Math.abs(this.speed) * 0.06;
+  Node.prototype.place = function (t) {
+    this.x = this.hx * W + Math.sin(t * this.ax + this.px) * this.rx;
+    this.y = this.hy * H + Math.cos(t * this.ay + this.py) * this.ry;
   };
 
-  function halfW(f, L) {
-    // rounded nose, fullest just behind the head, long taper to the tail,
-    // with a soft flare at the very end for the tail fin
-    var w = L * 0.145 * Math.pow(Math.sin(Math.PI * (0.07 + 0.86 * f)), 0.85);
-    if (f > 0.8) w *= 1 + Math.sin((f - 0.8) / 0.2 * Math.PI) * 0.55;
-    return Math.max(w, 0.4);
-  }
+  var count = Math.round(Math.min(32, Math.max(14, (W * H) / 62000)));
+  var nodes = [];
+  for (var i = 0; i < count; i++) nodes.push(new Node(i));
 
-  Koi.prototype.draw = function (t) {
-    var L = this.len, seg = 16, i, f;
-    var drift = (this.hue + t * 0.004) % 360;
-    ctx.save();
-    ctx.translate(this.x, this.y * H);
-    ctx.scale(this.dir, 1);
-    ctx.rotate(this.pitch);
+  var pulses = [];                                  // {a, b, t0, dur}
+  function linkDist() { return Math.max(120, Math.min(200, W * 0.17)); }
 
-    var grad = ctx.createLinearGradient(-L / 2, 0, L / 2, 0);
-    grad.addColorStop(0.00, 'hsla(' + ((drift + 200) % 360) + ',95%,68%,' + this.alpha + ')');
-    grad.addColorStop(0.35, 'hsla(' + ((drift + 120) % 360) + ',95%,66%,' + this.alpha + ')');
-    grad.addColorStop(0.70, 'hsla(' + ((drift + 40) % 360) + ',95%,64%,' + this.alpha + ')');
-    grad.addColorStop(1.00, 'hsla(' + (drift % 360) + ',95%,66%,' + this.alpha + ')');
-
-    // pectoral fins, flapping gently
-    ctx.fillStyle = grad;
-    for (var s = -1; s <= 1; s += 2) {
-      ctx.save();
-      ctx.translate(L * 0.20, s * halfW(0.28, L) * 0.8);
-      ctx.rotate(s * (0.85 + Math.sin(this.phase * 0.9) * 0.18));
-      ctx.beginPath();
-      ctx.ellipse(-L * 0.07, 0, L * 0.11, L * 0.035, 0, 0, TAU);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    // body: spine points with a travelling sine, amplitude growing to the tail
-    var left = [], right = [];
-    for (i = 0; i <= seg; i++) {
-      f = i / seg;
-      var bx = L / 2 - f * L;
-      var off = Math.sin(this.phase - f * 4.6) * Math.pow(f, 1.6) * L * 0.085;
-      var w = halfW(f, L);
-      left.push([bx, off - w]);
-      right.push([bx, off + w]);
-    }
-    ctx.beginPath();
-    ctx.moveTo(left[0][0], left[0][1]);
-    for (i = 1; i < left.length; i++) ctx.lineTo(left[i][0], left[i][1]);
-    for (i = right.length - 1; i >= 0; i--) ctx.lineTo(right[i][0], right[i][1]);
-    ctx.closePath();
-    ctx.fillStyle = grad;
-    ctx.fill();
-
-    // sheen core — a thinner, paler pass down the spine for the holo gloss
-    ctx.beginPath();
-    for (i = 0; i <= seg; i++) {
-      f = i / seg;
-      var sx = L / 2 - f * L;
-      var soff = Math.sin(this.phase - f * 4.6) * Math.pow(f, 1.6) * L * 0.085;
-      var sw = halfW(f, L) * 0.38;
-      if (i === 0) ctx.moveTo(sx, soff - sw); else ctx.lineTo(sx, soff - sw);
-    }
-    for (i = seg; i >= 0; i--) {
-      f = i / seg;
-      var sx2 = L / 2 - f * L;
-      var soff2 = Math.sin(this.phase - f * 4.6) * Math.pow(f, 1.6) * L * 0.085;
-      var sw2 = halfW(f, L) * 0.38;
-      ctx.lineTo(sx2, soff2 + sw2);
-    }
-    ctx.closePath();
-    ctx.fillStyle = 'hsla(' + ((drift + 160) % 360) + ',100%,88%,' + (this.alpha * 0.5) + ')';
-    ctx.fill();
-    ctx.restore();
-  };
-
-  var school = [];
-  var n = (W < 640 ? 5 : 8);
-  for (var k = 0; k < n; k++) school.push(new Koi(k + 1));
-
-  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduced) {
-    ctx.globalCompositeOperation = 'lighter';
-    for (var j = 0; j < school.length; j++) school[j].draw(1200);
-    return;
-  }
-
-  function frame(t) {
+  function draw(t, withPulses) {
     ctx.clearRect(0, 0, W, H);
     ctx.globalCompositeOperation = 'lighter';
-    for (var j = 0; j < school.length; j++) { school[j].step(t); school[j].draw(t); }
+    var i, j;
+    for (i = 0; i < nodes.length; i++) nodes[i].place(t);
+    var LD = linkDist(), links = [];
+
+    // links: kindle by proximity
+    for (i = 0; i < nodes.length; i++) {
+      for (j = i + 1; j < nodes.length; j++) {
+        var dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d < LD) {
+          var a = (1 - d / LD) * 0.13;
+          ctx.strokeStyle = 'rgba(45,212,191,' + a.toFixed(3) + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.stroke();
+          links.push([i, j]);
+        }
+      }
+    }
+
+    // pulses: packets riding live links
+    if (withPulses) {
+      if (links.length && pulses.length < 4 && Math.random() < 0.010) {
+        var pick = links[Math.floor(Math.random() * links.length)];
+        if (Math.random() < 0.5) pick = [pick[1], pick[0]];
+        pulses.push({ a: pick[0], b: pick[1], t0: t, dur: rnd(900, 1600) });
+      }
+      for (i = pulses.length - 1; i >= 0; i--) {
+        var p = pulses[i], f = (t - p.t0) / p.dur;
+        if (f >= 1) { nodes[p.b].flare = 1; pulses.splice(i, 1); continue; }
+        var A = nodes[p.a], B = nodes[p.b];
+        for (var k = 5; k >= 0; k--) {              // fading trail behind the head
+          var ff = f - k * 0.035;
+          if (ff < 0) continue;
+          var x = A.x + (B.x - A.x) * ff, y = A.y + (B.y - A.y) * ff;
+          var al = 0.5 * (1 - k / 6), rr = 2.3 * (1 - k / 9);
+          ctx.fillStyle = 'rgba(160,255,240,' + al.toFixed(3) + ')';
+          ctx.beginPath(); ctx.arc(x, y, rr, 0, TAU); ctx.fill();
+        }
+      }
+    }
+
+    // nodes: halo, core, and the flare when a packet lands
+    for (i = 0; i < nodes.length; i++) {
+      var nd = nodes[i];
+      var base = nd.hub ? 0.55 : 0.34;
+      var col = nd.violet ? '167,139,250' : '45,212,191';
+      var haloR = nd.r * (5 + nd.flare * 5);
+      var g = ctx.createRadialGradient(nd.x, nd.y, 0, nd.x, nd.y, haloR);
+      g.addColorStop(0, 'rgba(' + col + ',' + (0.10 + nd.flare * 0.22).toFixed(3) + ')');
+      g.addColorStop(1, 'rgba(' + col + ',0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(nd.x, nd.y, haloR, 0, TAU); ctx.fill();
+      ctx.fillStyle = 'rgba(' + (nd.hub ? '200,255,246' : col) + ',' + (base + nd.flare * 0.45).toFixed(3) + ')';
+      ctx.beginPath(); ctx.arc(nd.x, nd.y, nd.r + nd.flare * 1.4, 0, TAU); ctx.fill();
+      nd.flare *= 0.94;
+    }
     ctx.globalCompositeOperation = 'source-over';
-    requestAnimationFrame(frame);
   }
+
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) { draw(4200, false); return; }
+  function frame(t) { draw(t, true); requestAnimationFrame(frame); }
   requestAnimationFrame(frame);
 })();
 
