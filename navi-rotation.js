@@ -1,6 +1,7 @@
 // navi-rotation.js — Navi's listening rotation, the site copy
-// (v0.6.12e, Apex #346). The identical algorithm the Apex bridge
-// runs (bridge.py: rowsown_music_now / rowsown_cycle_order /
+// (v0.6.12e, Apex #346; table refreshed in v0.6.14e). The
+// identical algorithm the Apex bridge runs (bridge.py:
+// rowsown_music_now / rowsown_cycle_order /
 // _rowsown_mulberry32), shipped as a standalone module for the
 // site round: nocturnerow.com and onlynavi.fans compute her
 // soundtrack from the same data and the same math, so every
@@ -12,19 +13,24 @@
 // mulberry32 seeded with the cycle number; the position inside
 // the cycle names the track and the offset into it.
 //
-// EPOCH: 1795222078 — the moment v0.6.12e published
-// (2026-11-20 19:47:58 EST), per Alex's ruling: her soundtrack
-// starts when the feature does. Identical in bridge.py's
-// ROWSOWN_PLAYLIST; the two copies must always agree.
+// THE EPOCH IS FROZEN: 1795222078 is the moment v0.6.12e
+// published (Alex's ruling: her soundtrack starts when the
+// feature does) and no later build re-stamps it — keep BOTH
+// copies (here and bridge.py's ROWSOWN_PLAYLIST) identical.
+//
+// v0.6.14e (operator rulings, 2026-11-20): the track pool is a
+// snapshot of the operator's Spotify playlist "Navi's Super
+// Hacker Mix" (id 7C3XSKZH5FcAF9CH5PLwSl), taken 2026-11-20,
+// in playlist order; and every LINK the rotation renders
+// points at the playlist itself (NAVI_PLAYLIST_URL), never at
+// the individual track — the per-track ids stay as identity.
 "use strict";
 
+var NAVI_PLAYLIST_URL = "https://open.spotify.com/playlist/7C3XSKZH5FcAF9CH5PLwSl";
+
 var NAVI_PLAYLIST = {
-  epoch: 1795222078, // epoch = the moment v0.6.12e published (Alex's ruling, #346)
+  epoch: 1795222078, // epoch = the moment v0.6.12e published (Alex's ruling, #346) — frozen, never re-stamped
   cycleSeconds: 1185,
-  // Track pool: a snapshot of Alex's Spotify playlist "Navi's Super
-  // Hacker Mix" (7C3XSKZH5FcAF9CH5PLwSl), taken 2026-11-20 — the
-  // playlist is the editorial source; this table is its compiled
-  // copy, and bridge.py's table must always agree with it.
   tracks: [
     { title: "Gone", artist: "SIERRA VEINS", seconds: 216, spotify: "2hdhMoaEpzenU9vGtAuWwF" },
     { title: "Magnum Bullets", artist: "Night Runner feat. Dan Avidan", seconds: 243, spotify: "2FGWXLeSSVWZlf7sh5A6te" },
@@ -72,7 +78,7 @@ function musicNow(nowSeconds, playlist) {
     if (pos < acc + tr.seconds) {
       return { cycle: cycle, trackIndex: order[n], title: tr.title,
                artist: tr.artist, spotifyId: tr.spotify,
-               url: "https://open.spotify.com/track/" + tr.spotify,
+               url: NAVI_PLAYLIST_URL,
                offset: pos - acc, duration: tr.seconds,
                position: pos, cycleSeconds: total };
     }
@@ -82,7 +88,7 @@ function musicNow(nowSeconds, playlist) {
   return { cycle: cycle, trackIndex: order[order.length - 1],
            title: last.title, artist: last.artist,
            spotifyId: last.spotify,
-           url: "https://open.spotify.com/track/" + last.spotify,
+           url: NAVI_PLAYLIST_URL,
            offset: last.seconds, duration: last.seconds,
            position: pos, cycleSeconds: total };
 }
