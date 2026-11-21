@@ -120,6 +120,10 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 .av-lb-next{right:10px}
 .av-lb-bar{position:absolute;left:0;right:0;bottom:0;padding:26px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(2,4,8,.92) 45%);color:var(--text);font-size:14px;z-index:3;display:flex;gap:12px;align-items:baseline;pointer-events:none}
 .av-lb-bar #av-lb-count{color:var(--accent);white-space:nowrap;font-size:13px}
+#av-lb-copy{background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap}
+#av-lb-copy:hover{color:var(--accent);border-color:var(--accent)}
+.av-endcard{border:1px dashed var(--line);border-radius:14px;padding:22px 18px;text-align:center;color:var(--text);font-size:15px;margin:4px 0 26px}
+.av-endcard span{color:var(--muted);font-size:13px}
 @media(max-width:640px){.av-lb-nav{width:42px;height:56px;font-size:26px}}
 .av-head{display:block;padding:0;overflow:hidden}
 .av-head .av-banner img{width:100%;height:150px;object-fit:cover;object-position:center 38%;display:block;border-radius:0;margin:0}
@@ -182,7 +186,7 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 <button class="av-lb-x" onclick="avClose()" aria-label="Close">&#10005;</button>
 <button class="av-lb-nav av-lb-prev" onclick="avNav(-1)" aria-label="Previous">&#8249;</button>
 <button class="av-lb-nav av-lb-next" onclick="avNav(1)" aria-label="Next">&#8250;</button>
-<div class="av-lb-bar"><span id="av-lb-count"></span><span id="av-lb-cap"></span></div>
+<div class="av-lb-bar"><span id="av-lb-count"></span><span id="av-lb-cap"></span><button id="av-lb-copy" onclick="avCopyLink(this)">Copy link</button></div>
 </div>
 <script src="navi-rotation.js"></script>
 <script>
@@ -221,14 +225,16 @@ function avRender(){
   if(p.type==='locked'){h+='<div class="av-locked"><div class="when" style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.12em">'+p.when+'</div><p style="margin-top:8px">\uD83D\uDD12 '+p.text+'</p></div>';return;}
   if(p.type==='poll'){h+='<div class="av-post"><div class="when">'+p.when+'</div><p>'+p.text+'</p>'+avPoll(p)+'</div>';return;}
   h+='<div class="av-post"><div class="when">'+p.when+'</div>';
-  if(p.type==='image'||p.type==='video'){var gi=window._avGal.length;window._avGal.push({t:p.type,s:p.src,x:p.text||''});
+  if(p.type==='image'||p.type==='video'){var gi=window._avGal.length;window._avGal.push({t:p.type,s:p.src,x:p.text||'',k:(p.src||'').split('/').pop().replace(/\.[a-z0-9]+$/i,'')});
   if(p.type==='image')h+='<img src="'+p.src+'" alt="'+avAlt(p)+'" loading="lazy" draggable="false" onclick="avOpen('+gi+')">';
   else h+='<div class="av-vidwrap"><video src="'+p.src+'" preload="metadata" controls playsinline controlsList="nodownload" disablepictureinpicture></video><button class="av-expand" onclick="avOpen('+gi+')">fullscreen</button></div>';}
   h+='<p>'+p.text+'</p>';
   if(p.comments){var _pc=null;h+='<div class="av-comments">'+p.comments.map(function(c){var _brk=(_pc!==null&&_pc!==c.from);_pc=c.from;var _face=(c.from===f.name)?'<img class="av-cface" src="'+f.avatar+'" alt="" draggable="false">':'<span class="av-cmono">'+(c.from||'?').charAt(0).toUpperCase()+'</span>';return (_brk?'<div class="av-comment-break"></div>':'')+'<div class="av-comment">'+_face+'<div class="av-cbody"><span class="av-cname">'+c.from+'</span>'+c.text+'</div></div>';}).join('')+'</div>';}
   var _L=avLikes();var _liked=_L.indexOf('p'+pi)!==-1;h+='<div class="av-likerow"><button class="av-likebtn'+(_liked?' liked':'')+'" data-k="p'+pi+'" onclick="avLike(this)">\u2665 <span>'+(_liked?'3':'2')+'</span></button></div>';
   h+='</div>';});
- el.innerHTML=h;el.hidden=false;document.getElementById('av-locked').hidden=true;document.querySelectorAll('.av-gated').forEach(function(x){x.hidden=false;});avTickStart();}
+ h+='<div class="av-endcard">that\u2019s everything \u2014 you\u2019re all caught up.<br><span>she\u2019s out there somewhere. probably mid-patrol.</span></div>';
+ el.innerHTML=h;el.hidden=false;document.getElementById('av-locked').hidden=true;document.querySelectorAll('.av-gated').forEach(function(x){x.hidden=false;});avTickStart();
+ try{var _m=(location.hash||'').match(/^#p-([a-z0-9]+)$/i);if(_m){for(var _di=0;_di<window._avGal.length;_di++){if(window._avGal[_di].k===_m[1]){avOpen(_di);break;}}}}catch(e){}}
 try{if(localStorage.getItem("nr-av")==='1')avRender();}catch(e){}
 document.getElementById('av-form').addEventListener('submit',function(e){e.preventDefault();var v=document.getElementById('av-inp').value;
  if(avOk(v)){try{localStorage.setItem("nr-av","1");}catch(e){}avRender();}
@@ -240,9 +246,11 @@ function avShow(){var g=window._avGal[window._avCur];if(!g)return;var st=documen
  else{st.style.backgroundImage='';st.hidden=true;vd.hidden=false;if(vd.getAttribute('src')!==g.s)vd.src=g.s;var pr=vd.play();if(pr&&pr.catch)pr.catch(function(){});}
  document.getElementById('av-lb-count').textContent=(window._avCur+1)+' / '+window._avGal.length;
  document.getElementById('av-lb-cap').textContent=g.x||'';
+ try{if(g.k)history.replaceState(null,'','#p-'+g.k);}catch(e){}
  var n=window._avGal.length;if(n>1){var nx=window._avGal[(window._avCur+1)%n];var pv=window._avGal[(window._avCur-1+n)%n];if(nx.t==='image'){var a=new Image();a.src=nx.s;}if(pv.t==='image'){var b=new Image();b.src=pv.s;}}}
 function avOpen(i){window._avCur=i;var lb=document.getElementById('av-lb');lb.classList.remove('textoff');lb.classList.add('open');document.body.style.overflow='hidden';avShow();}
-function avClose(){document.getElementById('av-lb').classList.remove('open');document.body.style.overflow='';var vd=document.getElementById('av-lb-vid');try{vd.pause();}catch(e){}vd.removeAttribute('src');try{vd.load();}catch(e){}vd.hidden=true;}
+function avClose(){document.getElementById('av-lb').classList.remove('open');document.body.style.overflow='';try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}var vd=document.getElementById('av-lb-vid');try{vd.pause();}catch(e){}vd.removeAttribute('src');try{vd.load();}catch(e){}vd.hidden=true;}
+function avCopyLink(btn){var g=window._avGal[window._avCur];if(!g||!g.k)return;var url=location.origin+location.pathname+'#p-'+g.k;var o=btn.textContent;function flash(t){btn.textContent=t;setTimeout(function(){btn.textContent=o;},1600);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(function(){flash('Copied');},function(){flash('Link is in the address bar');});}else{flash('Link is in the address bar');}}
 function avToggleText(){document.getElementById('av-lb').classList.toggle('textoff');}
 function avNav(d){var n=window._avGal.length;if(!n)return;window._avCur=(window._avCur+d+n)%n;avShow();}
 (function(){var lb=document.getElementById('av-lb');if(!lb)return;var sx=null,sy=null;
