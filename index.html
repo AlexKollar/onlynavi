@@ -88,6 +88,9 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 .av-ticker .lbl{color:var(--accent);text-transform:uppercase;letter-spacing:.14em;font-size:11px;white-space:nowrap}
 .av-ticker #av-tick{transition:opacity .5s}
 .av-subbtn{margin-top:10px;margin-left:8px;background:var(--accent);color:#04241f;border:1px solid var(--accent);border-radius:8px;padding:6px 14px;cursor:pointer;font-family:inherit;font-weight:700}
+.av-btnstack{display:inline-block;vertical-align:top;margin-left:8px}
+.av-btnstack .av-subbtn{display:block;margin-left:0;text-align:center}
+.av-btnstack .av-subbtn+.av-subbtn{margin-top:8px}
 .av-likerow{margin-top:10px}
 .av-likebtn{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:4px 12px;cursor:pointer;font-family:inherit;font-size:13px}
 .av-likebtn.liked{color:var(--accent);border-color:var(--accent)}
@@ -308,7 +311,7 @@ function avCopySet(){if(!window._avSet)return;var url='https://onlynavi.fans/s/'
 function avExport(){try{var pretty=JSON.stringify(JSON.parse(atob(AV_BLOB)),null,2);var bl=new Blob([pretty],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download='navi-archive.json';document.body.appendChild(a);a.click();a.remove();avToast('her memory, in a file. keep it somewhere safe.');}catch(e){avToast('export hiccup. she felt that.');}}
 function avRender(){
  var f=JSON.parse(atob(AV_BLOB));window._avf=f;window._avGal=[];var gh='';var el=document.getElementById('av-feed');
- var h='<div class="av-head"><div class="av-banner"><img src="banner-city.jpg" alt="" draggable="false"></div><div class="av-hrow"><img src="'+f.avatar+'" alt="" draggable="false" id="av-avatar" onclick="avTap()" style="cursor:pointer"><div style="padding-bottom:6px"><div class="av-brand">'+f.name+' <span class="av-star" id="av-star" onclick="avStar()" style="cursor:pointer">&#9733;</span><span class="av-on"><i></i>online</span></div><div style="color:var(--muted)">'+f.handle+'</div></div></div><div class="av-hmeta"><div style="color:var(--muted);font-size:13px">'+f.stats+'</div><div id="av-lastposted" style="color:var(--muted);font-size:13px"></div>'+(f.listening?'<div class="av-listen"><span class="av-eq"><i></i><i></i><i></i><i></i><i></i></span><a href="'+f.listening.url+'" target="_blank" rel="noopener">'+f.listening.label+'</a></div>':'')+'<button class="av-tipbtn" onclick="avTip()">Send a tip</button><a class="av-subbtn" href="https://github.com/sponsors/AlexKollar" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">Subscribe</a><a class="av-subbtn" href="https://open.spotify.com/playlist/7C3XSKZH5FcAF9CH5PLwSl?si=e552e28920b0495d&pt=5943184f3bc87450441d81548b7b065c" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block;margin-left:8px">Contribute music to my playlist</a><div class="av-tipbox" id="av-tipbox"></div></div></div>';
+ var h='<div class="av-head"><div class="av-banner"><img src="banner-city.jpg" alt="" draggable="false"></div><div class="av-hrow"><img src="'+f.avatar+'" alt="" draggable="false" id="av-avatar" onclick="avTap()" style="cursor:pointer"><div style="padding-bottom:6px"><div class="av-brand">'+f.name+' <span class="av-star" id="av-star" onclick="avStar()" style="cursor:pointer">&#9733;</span><span class="av-on"><i></i>online</span></div><div style="color:var(--muted)">'+f.handle+'</div></div></div><div class="av-hmeta"><div style="color:var(--muted);font-size:13px">'+f.stats+'</div><div id="av-lastposted" style="color:var(--muted);font-size:13px"></div>'+(f.listening?'<div class="av-listen"><span class="av-eq"><i></i><i></i><i></i><i></i><i></i></span><a href="'+f.listening.url+'" target="_blank" rel="noopener">'+f.listening.label+'</a></div>':'')+'<button class="av-tipbtn" onclick="avTip()">Send a tip</button><a class="av-subbtn" href="https://github.com/sponsors/AlexKollar" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">Subscribe</a><span class="av-btnstack"><a class="av-subbtn" href="backchannel.html" style="text-decoration:none">The Back Channel — my podcast</a><a class="av-subbtn" href="https://open.spotify.com/playlist/7C3XSKZH5FcAF9CH5PLwSl?si=e552e28920b0495d&pt=5943184f3bc87450441d81548b7b065c" target="_blank" rel="noopener" style="text-decoration:none">Contribute music to my playlist</a></span><div class="av-tipbox" id="av-tipbox"></div></div></div>';
  var _setOrder=['street patrol','command desk','the room','the shore'];
  var _highs=_setOrder.map(function(sn){var cover=null;for(var _hi=0;_hi<f.posts.length;_hi++){var _hp=f.posts[_hi];if(_hp.set===sn&&_hp.type==='image'){cover=_hp.src;break;}}if(!cover)return '';return '<button type="button" class="av-high" data-set="'+sn+'" onclick="avSetCollection(\''+sn+'\')"><span class="av-highring"><img src="'+cover+'" alt="" loading="lazy" draggable="false"></span><span class="av-highname">'+sn+'</span></button>';}).join('');
  if(_highs) h+='<div class="av-highs">'+_highs+'</div>';
@@ -331,7 +334,7 @@ function avRender(){
  h+='<button type="button" class="av-setbar" id="av-setbar" style="display:none" onclick="avSetCollection(window._avSet)"></button>';
  h+='<div style="text-align:center;margin:-4px 0 10px"><button type="button" class="av-fchip" id="av-setshare" style="display:none" onclick="avCopySet()">copy collection link</button></div>';
  h+='<button type="button" class="av-setbar" id="av-newpill" style="display:none" onclick="avJumpNew()"></button>';
- h+='<div class="av-arc" id="av-drawer" style="display:none"><div class="av-arch">the star drawer</div><p id="av-drawer-text"></p><div id="bc-shelf"></div></div>';
+ h+='<div class="av-arc" id="av-drawer" style="display:none"><div class="av-arch">the star drawer</div><p id="av-drawer-text"></p></div>';
  f.posts.forEach(function(p,pi){
   var _nb=(p.ts&&window._avSeenBoot&&p.ts>window._avSeenBoot)?' <span class="av-newbadge">new</span>':'';
   var _pos=f.posts.length-pi;
@@ -403,17 +406,6 @@ if(avpf)avpf.addEventListener('submit',function(e){e.preventDefault();var v=docu
 // Her listening line runs on the shared rotation (#346): the same
 // deterministic schedule as Apex, from the publish-moment epoch.
 (function(){function upd(){try{if(!window.NaviRotation)return;var a=document.querySelector('.av-listen a');if(!a)return;var m=NaviRotation.musicNow(Date.now()/1000);var label=m.artist+' - '+m.title;if(a.textContent!==label){a.textContent=label;}if(a.getAttribute('href')!==m.url){a.setAttribute('href','https://open.spotify.com/playlist/7C3XSKZH5FcAF9CH5PLwSl');}}catch(e){}}setInterval(upd,5000);setTimeout(upd,800);})();
-</script>
-<script>
-function bcToggle(btn){var d=btn.parentNode.querySelector('.bc-details');if(!d)return;var open=d.style.display!=='none';d.style.display=open?'none':'';btn.textContent=open?'her notes \u25be':'her notes \u25b4';}
-(function(){function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function paras(t){return String(t||'').split(/\n+/).filter(function(x){return x.trim();}).map(function(x){return '<p style="margin:6px 0;color:var(--text)">'+esc(x)+'</p>';}).join('');}
-function render(d){var shelf=document.getElementById('bc-shelf');if(!shelf||!d||!d.episodes)return;
-var h='<div class="av-arch" style="margin-top:14px">the back channel · the talks, in audio</div><p style="margin:0 0 6px;color:var(--muted);font-size:13px">ciel \u00d7 navi, on the record. hidden in the starboard, where the good cables live. <a href="backchannel.html" style="color:var(--accent)">the whole channel, on its own page \u2192</a></p>';
-d.episodes.forEach(function(ep){var tops=(ep.topics||[]).map(function(t){return '<div style="color:var(--muted);font-size:13px;margin:3px 0">\u00b7 '+esc(t)+'</div>';}).join('');
-h+='<div class="bc-card" style="border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px;background:var(--panel,#0a0f16)"><div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em">episode '+ep.n+' \u00b7 '+esc(ep.date)+'</div><div style="font-weight:700;margin:4px 0">'+esc(ep.title)+'</div>'+(ep.audio?'<audio controls preload="none" src="'+esc(ep.audio)+'" style="width:100%;margin:6px 0"></audio>':'')+'<button type="button" onclick="bcToggle(this)" style="background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:4px">her notes \u25be</button><div class="bc-details" style="display:none"><p style="margin:10px 0 6px;color:var(--text)">'+esc(ep.post)+'</p>'+tops+'<div style="border-top:1px dashed var(--line);margin-top:10px;padding-top:6px">'+paras(ep.log)+'</div></div></div>';});
-shelf.innerHTML=h;}
-if(window.fetch){fetch('talks.json?h='+Math.floor(Date.now()/36e5)).then(function(r){return r.json();}).then(render).catch(function(){});}})();
 </script>
 </body>
 </html>
