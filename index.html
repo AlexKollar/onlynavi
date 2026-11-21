@@ -138,6 +138,7 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 .av-high.on .av-highring{border-color:var(--accent)}
 .av-highring img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
 .av-highname{font-size:11px;color:var(--muted)}
+.av-setbar{border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:7px 14px;font-size:13px;margin:2px 0 10px;cursor:pointer;background:transparent;width:100%;text-align:center}
 .av-mile{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:18px 0 2px}
 .av-arc{border:1px solid var(--accent);border-radius:14px;padding:16px;margin-top:14px;background:#05080d}
 .av-arc .av-arch{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
@@ -272,6 +273,7 @@ function avApplyFilter(){
  document.querySelectorAll('.av-mile').forEach(function(el){el.style.display=(!grid&&fl==='all'&&!q&&!window._avSet)?'':'none';});
  document.querySelectorAll('.av-vbtn').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-v')===_avView);});
  document.querySelectorAll('.av-high').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-set')===window._avSet);});
+ var sb=document.getElementById('av-setbar'); if(sb){if(window._avSet){var _n=0;f.posts.forEach(function(p){if(p.set===window._avSet)_n++;});sb.textContent='collection: '+window._avSet+' · '+_n+(_n===1?' post':' posts')+' — tap to show everything';sb.style.display='';}else{sb.style.display='none';}}
  document.querySelectorAll('.av-fchip').forEach(function(c){c.classList.toggle('on',c.getAttribute('data-f')===fl);});
  var si=document.getElementById('av-search'); if(si&&si.value!==(window._avQuery||'')) si.value=window._avQuery||'';
 }
@@ -300,6 +302,7 @@ function avRender(){
   if(f.wishlist){h+='<div class="av-card"><div class="av-cardh">her wishlist</div><ul>'+f.wishlist.map(function(w){return '<li>'+w+'</li>';}).join('')+'</ul></div>';}
   h+='</div>';}
  h+='<div class="av-filterbar"><div class="av-chips"><button class="av-fchip" data-f="all" onclick="avSetFilter(\'all\')">All</button><button class="av-fchip" data-f="image" onclick="avSetFilter(\'image\')">Pictures</button><button class="av-fchip" data-f="video" onclick="avSetFilter(\'video\')">Videos</button><button class="av-fchip" data-f="text" onclick="avSetFilter(\'text\')">Notes</button><button class="av-fchip" data-f="poll" onclick="avSetFilter(\'poll\')">Polls</button></div><input id="av-search" type="search" placeholder="search her archive\u2026" oninput="avSetQuery(this.value)"><span class="av-vtoggle"><button type="button" class="av-vbtn" data-v="feed" onclick="avSetView(\'feed\')">Feed</button><button type="button" class="av-vbtn" data-v="grid" onclick="avSetView(\'grid\')">Grid</button></span></div>';
+ h+='<button type="button" class="av-setbar" id="av-setbar" style="display:none" onclick="avSetCollection(window._avSet)"></button>';
  f.posts.forEach(function(p,pi){
   var _pos=f.posts.length-pi;
   if(_pos%10===0) h+='<div class="av-mile">№ '+_pos+' · the archive deepens</div>';
