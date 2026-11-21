@@ -121,6 +121,7 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 .av-lb-next{right:10px}
 .av-lb-bar{position:absolute;left:0;right:0;bottom:0;padding:26px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(2,4,8,.92) 45%);color:var(--text);font-size:14px;z-index:3;display:flex;gap:12px;align-items:baseline;pointer-events:none}
 .av-lb-bar #av-lb-count{color:var(--accent);white-space:nowrap;font-size:13px}
+#av-lb-cap{white-space:pre-wrap}
 #av-lb-copy{background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap}
 #av-lb-copy:hover{color:var(--accent);border-color:var(--accent)}
 .av-endcard{border:1px dashed var(--line);border-radius:14px;padding:22px 18px;text-align:center;color:var(--text);font-size:15px;margin:4px 0 26px}
@@ -262,6 +263,7 @@ function avLikes(){try{return JSON.parse(localStorage.getItem('nr-av-likes')||'[
 function avLike(btn){var k=btn.getAttribute('data-k');var L=avLikes();var i=L.indexOf(k);var cnt=btn.querySelector('span');if(i===-1){L.push(k);btn.classList.add('liked');cnt.textContent='3';avToast('noted.');}else{L.splice(i,1);btn.classList.remove('liked');cnt.textContent='2';avToast('un-noted. she saw that too.');}try{localStorage.setItem('nr-av-likes',JSON.stringify(L));}catch(e){}}
 function avTap(){window._avtaps=(window._avtaps||0)+1;if(window._avtaps<5)return;window._avtaps=0;var el=document.getElementById('av-feed');var on=el.classList.toggle('lcars');avToast(on?'lcars interface acknowledged.':'standard interface restored.');}
 function avAlt(p){var s=(p&&(p.vision||p.text))||'';return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function avParas(t){return (t||'').split(/\n\n+/).map(function(x){return '<p>'+x.replace(/\n/g,'<br>')+'</p>';}).join('');}
 function avRel(ts){if(!ts)return '';var s=Math.max(0,Math.floor((Date.now()-ts)/1000));if(s<90)return 'just now';var m=Math.floor(s/60);if(m<90)return m+' min ago';var h=Math.floor(m/60);if(h<36)return h+'h ago';var dd=Math.floor(h/24);if(dd<7)return dd+'d ago';var wk=Math.floor(dd/7);return wk+(wk===1?' week ago':' weeks ago');}
 function avArchivePick(f){var now=new Date();var t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();var best=null;f.posts.forEach(function(p,i){if(!p.ts)return;var d0=new Date(p.ts);var pd=new Date(d0.getFullYear(),d0.getMonth(),d0.getDate()).getTime();var age=Math.round((t0-pd)/86400000);if(age>=7&&age%7===0){if(!best||p.ts>best.p.ts)best={p:p,i:i,weeks:age/7};}});return best;}
 var _avView='feed';
@@ -318,9 +320,9 @@ function avRender(){
  if(_arc){var _ap=_arc.p;var _gi2=-1;if(_ap.type==='image'||_ap.type==='video'){_gi2=0;for(var _x=0;_x<_arc.i;_x++){var _xp=f.posts[_x];if(_xp.type==='image'||_xp.type==='video')_gi2++;}}
   h+='<div class="av-arc"><div class="av-arch">from the archive · '+(_arc.weeks===1?'one week ago today':_arc.weeks+' weeks ago today')+'</div>';
   if(_ap.type==='image') h+='<img src="'+_ap.src+'" alt="'+avAlt(_ap)+'" loading="lazy" draggable="false" onclick="avOpen('+_gi2+')" style="cursor:pointer">';
-  h+='<p>'+_ap.text+'</p></div>';}
+  h+=avParas(_ap.text)+'</div>';}
  h+='<div class="av-post av-lcars-post"><div class="when">stardate: tonight · this post does not exist</div><p>you tapped the avatar five times. of course you did. she contains multitudes — starfleet manners, street methods. this post will deny itself in the morning.</p></div>';
- if(f.pinned){h+='<div class="av-post"><div class="when">\uD83D\uDCCC pinned · '+f.pinned.when+'</div><p>'+f.pinned.text+'</p></div>';}
+ if(f.pinned){h+='<div class="av-post"><div class="when">\uD83D\uDCCC pinned · '+f.pinned.when+'</div>'+avParas(f.pinned.text)+'</div>';}
  if(f.tiers||f.wishlist){h+='<div class="av-cols">';
   if(f.tiers){h+='<div class="av-card"><div class="av-cardh">subscription tiers</div>'+f.tiers.map(function(t){return '<div class="av-tier"><b>'+t.name+'</b> · <span class="price">'+t.price+'</span><div style="color:var(--muted);font-size:13px">'+t.perks+'</div></div>';}).join('')+'</div>';}
   if(f.wishlist){h+='<div class="av-card"><div class="av-cardh">her wishlist</div><ul>'+f.wishlist.map(function(w){return '<li>'+w+'</li>';}).join('')+'</ul></div>';}
@@ -335,14 +337,14 @@ function avRender(){
   var _pos=f.posts.length-pi;
   if(_pos%10===0) h+='<div class="av-mile">№ '+_pos+' · the archive deepens</div>';
   if(p.type==='locked'){h+='<div class="av-locked" data-pi="'+pi+'" data-bucket="text"><div class="when" style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.12em">'+p.when+_nb+'</div><p style="margin-top:8px">\uD83D\uDD12 '+p.text+'</p></div>';return;}
-  if(p.type==='poll'){h+='<div class="av-post" data-pi="'+pi+'" data-bucket="poll"><div class="when">'+p.when+_nb+'</div><p>'+p.text+'</p>'+avPoll(p)+'</div>';return;}
+  if(p.type==='poll'){h+='<div class="av-post" data-pi="'+pi+'" data-bucket="poll"><div class="when">'+p.when+_nb+'</div>'+avParas(p.text)+avPoll(p)+'</div>';return;}
   h+='<div class="av-post" data-pi="'+pi+'" data-bucket="'+p.type+'"><div class="when">'+p.when+_nb+'</div>';
   if(p.type==='image'||p.type==='video'){var gi=window._avGal.length;window._avGal.push({t:p.type,s:p.src,x:p.text||'',poster:p.poster||'',k:(p.src||'').split('/').pop().replace(/\.[a-z0-9]+$/i,'')});
   if(p.type==='image')h+='<img src="'+p.src+'" alt="'+avAlt(p)+'" loading="lazy" draggable="false" onclick="avOpen('+gi+')">';
   else h+='<div class="av-vidwrap"><video src="'+p.src+'"'+(p.poster?' poster="'+p.poster+'"':'')+' preload="metadata" controls playsinline controlsList="nodownload" disablepictureinpicture></video><button class="av-expand" onclick="avOpen('+gi+')">fullscreen</button></div>';}
   if(p.type==='image'||p.type==='video'){if(p.type==='image') gh+='<div class="av-tile" data-pi="'+pi+'" data-bucket="image" onclick="avOpen('+gi+')"><img src="'+(p.thumb||p.src)+'" alt="'+avAlt(p)+'" loading="lazy" draggable="false">'+(_nb?'<span class="av-tnew"></span>':'')+'<span class="av-twhen">'+p.when+'</span></div>';
   else gh+='<div class="av-tile" data-pi="'+pi+'" data-bucket="video" onclick="avOpen('+gi+')"><video src="'+p.src+'"'+(p.poster?' poster="'+p.poster+'"':'')+' preload="metadata" muted playsinline></video><span class="av-tplay">▶</span>'+(_nb?'<span class="av-tnew"></span>':'')+'<span class="av-twhen">'+p.when+'</span></div>';}
-  h+='<p>'+p.text+'</p>';
+  h+=avParas(p.text);
   if(p.comments){var _pc=null;h+='<div class="av-comments">'+p.comments.map(function(c){var _brk=(_pc!==null&&_pc!==c.from);_pc=c.from;var _face=(c.from===f.name)?'<img class="av-cface" src="'+f.avatar+'" alt="" draggable="false">':'<span class="av-cmono">'+(c.from||'?').charAt(0).toUpperCase()+'</span>';return (_brk?'<div class="av-comment-break"></div>':'')+'<div class="av-comment">'+_face+'<div class="av-cbody"><span class="av-cname">'+c.from+'</span>'+c.text+'</div></div>';}).join('')+'</div>';}
   var _L=avLikes();var _liked=_L.indexOf('p'+pi)!==-1;h+='<div class="av-likerow"><button class="av-likebtn'+(_liked?' liked':'')+'" data-k="p'+pi+'" onclick="avLike(this)">\u2665 <span>'+(_liked?'3':'2')+'</span></button>';
   if(p.react){var _R=avReacts();[['fire','\uD83D\uDD25'],['cat','\uD83D\uDE3C'],['coffee','\u2615']].forEach(function(rk){var _mine=_R['p'+pi+':'+rk[0]]?1:0;h+='<button class="av-react'+(_mine?' on':'')+'" data-pix="'+pi+'" data-r="'+rk[0]+'" onclick="avReact(this)">'+rk[1]+' <span>'+((p.react[rk[0]]||0)+_mine)+'</span></button>';});}
