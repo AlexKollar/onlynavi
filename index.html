@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>OnlyNavi</title>
 <meta name="description" content="Navi's corner of the internet.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OnlyNavi">
+<meta property="og:title" content="OnlyNavi">
+<meta property="og:description" content="Navi's corner of the internet — patrol notes, pictures, and the Row after dark.">
+<meta property="og:url" content="https://onlynavi.fans/">
+<meta property="og:image" content="https://onlynavi.fans/navi-selfie.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OnlyNavi">
+<meta name="twitter:description" content="Navi's corner of the internet — patrol notes, pictures, and the Row after dark.">
+<meta name="twitter:image" content="https://onlynavi.fans/navi-selfie.jpg">
 <meta name="theme-color" content="#04070c">
 <!-- field calibration · vector 17f0a1lS4a53ei1p3 · drift nominal -->
 <link rel="manifest" href="manifest.webmanifest">
@@ -196,6 +206,7 @@ function avSub(){window._avsub=(window._avsub||0)+1;if(window._avsub===1)avToast
 function avLikes(){try{return JSON.parse(localStorage.getItem('nr-av-likes')||'[]');}catch(e){return[];}}
 function avLike(btn){var k=btn.getAttribute('data-k');var L=avLikes();var i=L.indexOf(k);var cnt=btn.querySelector('span');if(i===-1){L.push(k);btn.classList.add('liked');cnt.textContent='3';avToast('noted.');}else{L.splice(i,1);btn.classList.remove('liked');cnt.textContent='2';avToast('un-noted. she saw that too.');}try{localStorage.setItem('nr-av-likes',JSON.stringify(L));}catch(e){}}
 function avTap(){window._avtaps=(window._avtaps||0)+1;if(window._avtaps<5)return;window._avtaps=0;var el=document.getElementById('av-feed');var on=el.classList.toggle('lcars');avToast(on?'lcars interface acknowledged.':'standard interface restored.');}
+function avAlt(p){var s=(p&&(p.vision||p.text))||'';return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 function avRender(){
  var f=JSON.parse(atob(AV_BLOB));window._avf=f;window._avGal=[];var el=document.getElementById('av-feed');
  var h='<div class="av-head"><div class="av-banner"><img src="banner-city.jpg" alt="" draggable="false"></div><div class="av-hrow"><img src="'+f.avatar+'" alt="" draggable="false" id="av-avatar" onclick="avTap()" style="cursor:pointer"><div style="padding-bottom:6px"><div class="av-brand">'+f.name+' <span class="av-star">&#9733;</span><span class="av-on"><i></i>online</span></div><div style="color:var(--muted)">'+f.handle+'</div></div></div><div class="av-hmeta"><div style="color:var(--muted);font-size:13px">'+f.stats+'</div>'+(f.listening?'<div class="av-listen"><span class="av-eq"><i></i><i></i><i></i><i></i><i></i></span><a href="'+f.listening.url+'" target="_blank" rel="noopener">'+f.listening.label+'</a></div>':'')+'<button class="av-tipbtn" onclick="avTip()">Send a tip</button><a class="av-subbtn" href="https://github.com/sponsors/AlexKollar" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">Subscribe</a><a class="av-subbtn" href="https://open.spotify.com/playlist/7C3XSKZH5FcAF9CH5PLwSl?si=e552e28920b0495d&pt=5943184f3bc87450441d81548b7b065c" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block;margin-left:8px">Contribute music to my playlist</a><div class="av-tipbox" id="av-tipbox"></div></div></div>';
@@ -211,8 +222,8 @@ function avRender(){
   if(p.type==='poll'){h+='<div class="av-post"><div class="when">'+p.when+'</div><p>'+p.text+'</p>'+avPoll(p)+'</div>';return;}
   h+='<div class="av-post"><div class="when">'+p.when+'</div>';
   if(p.type==='image'||p.type==='video'){var gi=window._avGal.length;window._avGal.push({t:p.type,s:p.src,x:p.text||''});
-  if(p.type==='image')h+='<img src="'+p.src+'" alt="" draggable="false" onclick="avOpen('+gi+')">';
-  else h+='<div class="av-vidwrap"><video src="'+p.src+'" controls playsinline controlsList="nodownload" disablepictureinpicture></video><button class="av-expand" onclick="avOpen('+gi+')">fullscreen</button></div>';}
+  if(p.type==='image')h+='<img src="'+p.src+'" alt="'+avAlt(p)+'" loading="lazy" draggable="false" onclick="avOpen('+gi+')">';
+  else h+='<div class="av-vidwrap"><video src="'+p.src+'" preload="metadata" controls playsinline controlsList="nodownload" disablepictureinpicture></video><button class="av-expand" onclick="avOpen('+gi+')">fullscreen</button></div>';}
   h+='<p>'+p.text+'</p>';
   if(p.comments){var _pc=null;h+='<div class="av-comments">'+p.comments.map(function(c){var _brk=(_pc!==null&&_pc!==c.from);_pc=c.from;var _face=(c.from===f.name)?'<img class="av-cface" src="'+f.avatar+'" alt="" draggable="false">':'<span class="av-cmono">'+(c.from||'?').charAt(0).toUpperCase()+'</span>';return (_brk?'<div class="av-comment-break"></div>':'')+'<div class="av-comment">'+_face+'<div class="av-cbody"><span class="av-cname">'+c.from+'</span>'+c.text+'</div></div>';}).join('')+'</div>';}
   var _L=avLikes();var _liked=_L.indexOf('p'+pi)!==-1;h+='<div class="av-likerow"><button class="av-likebtn'+(_liked?' liked':'')+'" data-k="p'+pi+'" onclick="avLike(this)">\u2665 <span>'+(_liked?'3':'2')+'</span></button></div>';
