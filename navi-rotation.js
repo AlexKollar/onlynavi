@@ -20,12 +20,17 @@
 
 var NAVI_PLAYLIST = {
   epoch: 1795222078, // epoch = the moment v0.6.12e published (Alex's ruling, #346)
-  cycleSeconds: 956,
+  cycleSeconds: 1185,
+  // Track pool: a snapshot of Alex's Spotify playlist "Navi's Super
+  // Hacker Mix" (7C3XSKZH5FcAF9CH5PLwSl), taken 2026-11-20 — the
+  // playlist is the editorial source; this table is its compiled
+  // copy, and bridge.py's table must always agree with it.
   tracks: [
-    { title: "All the Things", artist: "Dual Core", seconds: 284, spotify: "3ZzxtumoIENCi16HAKuiLU" },
     { title: "Gone", artist: "SIERRA VEINS", seconds: 216, spotify: "2hdhMoaEpzenU9vGtAuWwF" },
-    { title: "2am", artist: "Sir Sly", seconds: 213, spotify: "3IQ1KwgW9eu7yAtrofZpbN" },
-    { title: "Magnum Bullets", artist: "Night Runner feat. Dan Avidan", seconds: 243, spotify: "2FGWXLeSSVWZlf7sh5A6te" }
+    { title: "Magnum Bullets", artist: "Night Runner feat. Dan Avidan", seconds: 243, spotify: "2FGWXLeSSVWZlf7sh5A6te" },
+    { title: "Can You Feel My Heart (Mothica Version)", artist: "MOTHICA", seconds: 142, spotify: "3v4IOOBYRRM3MpjTkQxqCH" },
+    { title: "Out of the Shadows", artist: "Ely Eira", seconds: 201, spotify: "7fBW6T3yvz3CqNRNA88unC" },
+    { title: "Backseat", artist: "Balu Brigada", seconds: 383, spotify: "7yT4NJt5rgmVoMJMGPULcj" }
   ]
 };
 
