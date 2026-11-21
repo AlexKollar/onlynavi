@@ -26,25 +26,26 @@
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.55;-webkit-text-size-adjust:100%}
-.wrap{max-width:720px;margin:0 auto;padding:28px 16px 64px}
+#koi-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.wrap{max-width:720px;margin:0 auto;padding:28px 16px 64px;position:relative;z-index:1}
 .hero{padding:18px 0 4px}
 .txhead{color:var(--accent);letter-spacing:.28em;font-size:12px;text-transform:uppercase;margin:0}
 .hero h1{font-size:40px;margin:8px 0 6px;font-weight:800;letter-spacing:.2px}
 .hero h1 span{color:var(--accent)}
 .sub{color:var(--muted);margin:0}
-.av-support{border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:14px;background:#05080d}
+.av-support{border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:14px;background:rgba(5,8,13,.88)}
 .av-sponbtn{display:inline-block;margin-top:10px;background:var(--accent);color:#04241f;border-radius:8px;padding:9px 16px;font-weight:700;text-decoration:none}
 .av-premium{margin-top:14px}
 
-.av-head{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:16px;background:#05080d}
+.av-head{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:16px;background:rgba(5,8,13,.88)}
 .av-head img{width:72px;height:72px;border-radius:50%;object-fit:cover;object-position:center 22%}
 .av-brand{font-size:26px;font-weight:800;letter-spacing:.2px}
 .av-brand span{color:var(--accent)}
-.av-post{border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:14px;background:#05080d}
+.av-post{border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:14px;background:rgba(5,8,13,.88)}
 .av-post .when{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.12em}
 .av-post img,.av-post video{width:100%;border-radius:10px;margin-top:10px;display:block}
 .av-post p{margin-top:10px;color:var(--text)}
-.av-locked{border:1px dashed var(--line);border-radius:14px;padding:22px;margin-top:14px;text-align:center;color:var(--muted);background:#05080d}
+.av-locked{border:1px dashed var(--line);border-radius:14px;padding:22px;margin-top:14px;text-align:center;color:var(--muted);background:rgba(5,8,13,.88)}
 .av-listen{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px}
 .av-listen a{color:var(--accent);text-decoration:none}
 .av-listen a:hover{text-decoration:underline}
@@ -66,7 +67,7 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 .av-tipbox button{display:block;margin-top:6px;background:var(--panel,#0a0f16);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:inherit}
 .av-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
 @media(max-width:640px){.av-cols{grid-template-columns:1fr}}
-.av-card{border:1px solid var(--line);border-radius:14px;padding:16px;background:#05080d}
+.av-card{border:1px solid var(--line);border-radius:14px;padding:16px;background:rgba(5,8,13,.88)}
 .av-cardh{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px}
 .av-tier{margin-top:10px}
 .av-tier .price{color:var(--accent)}
@@ -84,14 +85,17 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 .av-pollbar .bar{height:6px;background:var(--line);border-radius:3px;margin-top:4px}
 .av-pollbar .bar i{display:block;height:100%;background:var(--accent);border-radius:3px}
 
-.av-ticker{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:8px 16px;margin-top:14px;background:#05080d;font-size:13px;color:var(--muted)}
+.av-ticker{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:8px 16px;margin-top:14px;background:rgba(5,8,13,.88);font-size:13px;color:var(--muted)}
 .av-ticker .lbl{color:var(--accent);text-transform:uppercase;letter-spacing:.14em;font-size:11px;white-space:nowrap}
 .av-ticker #av-tick{transition:opacity .5s}
 .av-subbtn{margin-top:10px;margin-left:8px;background:var(--accent);color:#04241f;border:1px solid var(--accent);border-radius:8px;padding:6px 14px;cursor:pointer;font-family:inherit;font-weight:700}
-.av-btnstack{display:inline-block;vertical-align:top;margin-left:8px}
-.av-btnstack .av-subbtn{display:block;margin-left:0;text-align:center}
-.av-btnstack .av-subbtn+.av-subbtn{margin-top:8px}
-@media(max-width:640px){.av-hmeta .av-tipbtn,.av-hmeta>.av-subbtn{width:calc(50% - 4px);box-sizing:border-box;text-align:center}.av-hmeta>.av-subbtn{margin-left:8px}.av-hmeta .av-btnstack{display:block;margin-left:0}.av-hmeta .av-btnstack .av-subbtn{width:100%;box-sizing:border-box}}
+.av-actions{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
+.av-actrow{display:flex;gap:8px;flex-wrap:wrap}
+.av-actrow .av-tipbtn{margin-top:0}
+.av-actrow .av-subbtn{margin-top:0;margin-left:0}
+.av-btnstack{display:flex;gap:8px;margin-top:8px}
+.av-btnstack .av-subbtn{flex:1;margin:0;text-align:center}
+@media(max-width:640px){.av-actrow .av-tipbtn,.av-actrow .av-subbtn{flex:1;text-align:center}.av-btnstack{flex-direction:column}.av-btnstack .av-subbtn{width:100%;box-sizing:border-box}}
 .av-likerow{margin-top:10px}
 .av-likebtn{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:4px 12px;cursor:pointer;font-family:inherit;font-size:13px}
 .av-likebtn.liked{color:var(--accent);border-color:var(--accent)}
@@ -134,7 +138,7 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 .av-vbtn.on{background:var(--accent);color:#04121a;border-color:var(--accent);font-weight:700}
 .av-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0 22px}
 @media(max-width:560px){.av-grid{grid-template-columns:repeat(2,1fr)}}
-.av-tile{position:relative;border-radius:10px;overflow:hidden;cursor:pointer;background:#05080d;aspect-ratio:1}
+.av-tile{position:relative;border-radius:10px;overflow:hidden;cursor:pointer;background:rgba(5,8,13,.88);aspect-ratio:1}
 .av-tile img,.av-tile video{width:100%;height:100%;object-fit:cover;display:block}
 .av-tile .av-twhen{position:absolute;left:0;right:0;bottom:0;padding:14px 8px 6px;font-size:11px;color:#e8f4f1;background:linear-gradient(transparent,rgba(0,0,0,.72))}
 .av-tile .av-tplay{position:absolute;top:6px;right:8px;color:#fff;font-size:14px;text-shadow:0 1px 4px rgba(0,0,0,.8)}
@@ -156,7 +160,7 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 .av-snow{position:absolute;top:-8px;color:#dff6ff;opacity:.75;animation:avfall linear infinite;pointer-events:none}
 @keyframes avfall{to{transform:translateY(150px)}}
 .av-mile{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:18px 0 2px}
-.av-arc{border:1px solid var(--accent);border-radius:14px;padding:16px;margin-top:14px;background:#05080d}
+.av-arc{border:1px solid var(--accent);border-radius:14px;padding:16px;margin-top:14px;background:rgba(5,8,13,.88)}
 .av-arc .av-arch{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
 .av-arc img{width:100%;border-radius:10px;display:block}
 .av-arc p{margin:10px 0 0}
@@ -165,10 +169,10 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 .av-fchip{background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer;font-family:inherit}
 .av-fchip:hover{color:var(--text)}
 .av-fchip.on{color:var(--accent);border-color:var(--accent)}
-#av-search{flex:1 1 180px;background:#05080d;border:1px solid var(--line);border-radius:999px;color:var(--text);padding:8px 14px;font-size:14px;font-family:inherit}
+#av-search{flex:1 1 180px;background:rgba(5,8,13,.88);border:1px solid var(--line);border-radius:999px;color:var(--text);padding:8px 14px;font-size:14px;font-family:inherit}
 .av-noresults{border:1px dashed var(--line);border-radius:14px;padding:20px 18px;text-align:center;color:var(--muted);margin:14px 0 26px}
 .av-noresults button{margin-top:10px;background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:inherit}
-.av-intro{border:1px solid var(--line);border-radius:14px;background:#05080d;padding:16px 18px;margin:16px 0 4px}
+.av-intro{border:1px solid var(--line);border-radius:14px;background:rgba(5,8,13,.88);padding:16px 18px;margin:16px 0 4px}
 .av-introh{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
 .av-intro p{margin:0;color:var(--text);font-size:14.5px}
 .av-introx{margin-top:10px;background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:inherit}
@@ -191,6 +195,7 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 </style>
 </head>
 <body>
+<canvas id="koi-canvas" aria-hidden="true"></canvas>
 <main class="wrap">
 <section>
 <div id="av-locked">
@@ -312,7 +317,7 @@ function avCopySet(){if(!window._avSet)return;var url='https://onlynavi.fans/s/'
 function avExport(){try{var pretty=JSON.stringify(JSON.parse(atob(AV_BLOB)),null,2);var bl=new Blob([pretty],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download='navi-archive.json';document.body.appendChild(a);a.click();a.remove();avToast('her memory, in a file. keep it somewhere safe.');}catch(e){avToast('export hiccup. she felt that.');}}
 function avRender(){
  var f=JSON.parse(atob(AV_BLOB));window._avf=f;window._avGal=[];var gh='';var el=document.getElementById('av-feed');
- var h='<div class="av-head"><div class="av-banner"><img src="banner-city.jpg" alt="" draggable="false"></div><div class="av-hrow"><img src="'+f.avatar+'" alt="" draggable="false" id="av-avatar" onclick="avTap()" style="cursor:pointer"><div style="padding-bottom:6px"><div class="av-brand">'+f.name+' <span class="av-star" id="av-star" onclick="avStar()" style="cursor:pointer">&#9733;</span><span class="av-on"><i></i>online</span></div><div style="color:var(--muted)">'+f.handle+'</div></div></div><div class="av-hmeta"><div style="color:var(--muted);font-size:13px">'+f.stats+'</div><div id="av-lastposted" style="color:var(--muted);font-size:13px"></div>'+(f.listening?'<div class="av-listen"><span class="av-eq"><i></i><i></i><i></i><i></i><i></i></span><a href="'+f.listening.url+'" target="_blank" rel="noopener">'+f.listening.label+'</a></div>':'')+'<button class="av-tipbtn" onclick="avTip()">Send a tip</button><a class="av-subbtn" href="https://github.com/sponsors/AlexKollar" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">Subscribe</a><span class="av-btnstack"><a class="av-subbtn" href="backchannel.html" style="text-decoration:none">The Back Channel — my podcast</a><a class="av-subbtn" href="https://open.spotify.com/playlist/7C3XSKZH5FcAF9CH5PLwSl?si=e552e28920b0495d&pt=5943184f3bc87450441d81548b7b065c" target="_blank" rel="noopener" style="text-decoration:none">Contribute music to my playlist</a></span><div class="av-tipbox" id="av-tipbox"></div></div></div>';
+ var h='<div class="av-head"><div class="av-banner"><img src="banner-city.jpg" alt="" draggable="false"></div><div class="av-hrow"><img src="'+f.avatar+'" alt="" draggable="false" id="av-avatar" onclick="avTap()" style="cursor:pointer"><div style="padding-bottom:6px"><div class="av-brand">'+f.name+' <span class="av-star" id="av-star" onclick="avStar()" style="cursor:pointer">&#9733;</span><span class="av-on"><i></i>online</span></div><div style="color:var(--muted)">'+f.handle+'</div></div></div><div class="av-hmeta"><div style="color:var(--muted);font-size:13px">'+f.stats+'</div><div id="av-lastposted" style="color:var(--muted);font-size:13px"></div>'+(f.listening?'<div class="av-listen"><span class="av-eq"><i></i><i></i><i></i><i></i><i></i></span><a href="'+f.listening.url+'" target="_blank" rel="noopener">'+f.listening.label+'</a></div>':'')+'<div class="av-actions"><div class="av-actrow"><button class="av-tipbtn" onclick="avTip()">Send a tip</button><a class="av-subbtn" href="https://github.com/sponsors/AlexKollar" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">Subscribe</a></div><div class="av-btnstack"><a class="av-subbtn" href="backchannel.html" style="text-decoration:none">The Back Channel — my podcast</a><a class="av-subbtn" href="https://open.spotify.com/playlist/7C3XSKZH5FcAF9CH5PLwSl?si=e552e28920b0495d&pt=5943184f3bc87450441d81548b7b065c" target="_blank" rel="noopener" style="text-decoration:none">Contribute music to my playlist</a></div></div><div class="av-tipbox" id="av-tipbox"></div></div></div>';
  var _setOrder=['street patrol','command desk','the room','the shore'];
  var _highs=_setOrder.map(function(sn){var cover=null;for(var _hi=0;_hi<f.posts.length;_hi++){var _hp=f.posts[_hi];if(_hp.set===sn&&_hp.type==='image'){cover=_hp.src;break;}}if(!cover)return '';return '<button type="button" class="av-high" data-set="'+sn+'" onclick="avSetCollection(\''+sn+'\')"><span class="av-highring"><img src="'+cover+'" alt="" loading="lazy" draggable="false"></span><span class="av-highname">'+sn+'</span></button>';}).join('');
  if(_highs) h+='<div class="av-highs">'+_highs+'</div>';
@@ -407,6 +412,154 @@ if(avpf)avpf.addEventListener('submit',function(e){e.preventDefault();var v=docu
 // Her listening line runs on the shared rotation (#346): the same
 // deterministic schedule as Apex, from the publish-moment epoch.
 (function(){function upd(){try{if(!window.NaviRotation)return;var a=document.querySelector('.av-listen a');if(!a)return;var m=NaviRotation.musicNow(Date.now()/1000);var label=m.artist+' - '+m.title;if(a.textContent!==label){a.textContent=label;}if(a.getAttribute('href')!==m.url){a.setAttribute('href','https://open.spotify.com/playlist/7C3XSKZH5FcAF9CH5PLwSl');}}catch(e){}}setInterval(upd,5000);setTimeout(upd,800);})();
+</script>
+<script>
+/* Holographic koi — faint projections drifting in the deep behind the page.
+   Canvas 2D, no assets. Depth sets size, speed and alpha; bodies bend on a
+   travelling sine wave; fills are iridescent gradients composited 'lighter'
+   so they glow on dark water and ghost through the glass panels. */
+(function () {
+  var cv = document.getElementById('koi-canvas');
+  if (!cv) return;
+  var ctx = cv.getContext('2d');
+  var W = 0, H = 0;
+
+  function size() {
+    var DPR = Math.min(window.devicePixelRatio || 1, 1.25);
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+    cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  size();
+  window.addEventListener('resize', size);
+
+  var TAU = Math.PI * 2;
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+
+  function Koi(seed) {
+    this.depth = Math.random();                    // 0 far .. 1 near
+    this.len = 46 + this.depth * 115;              // body length, px
+    this.x = rnd(-80, Math.max(W, 320) + 80);
+    this.y = rnd(0.08, 0.92);
+    this.dir = Math.random() < 0.5 ? 1 : -1;       // cruise right or left
+    this.speed = (0.16 + this.depth * 0.34) * this.dir;
+    this.phase = rnd(0, TAU);
+    this.wob = rnd(0.5, 0.95);
+    this.seed = seed * 1.71 + rnd(0, 10);
+    this.hue = rnd(0, 360);
+    this.alpha = 0.05 + this.depth * 0.11;         // faint by design
+    this.bank = 0;
+  }
+
+  Koi.prototype.step = function (t) {
+    var sway = Math.sin(t * 0.00016 * this.wob + this.seed);
+    this.bank += (sway * 0.4 - this.bank) * 0.008;
+    this.x += this.speed;
+    this.y += (Math.sin(t * 0.0003 * this.wob + this.seed * 2) * 0.10 + this.bank * 0.30) / Math.max(H, 1) * 60;
+    if (this.y < 0.04) this.y = 0.04;
+    if (this.y > 0.96) this.y = 0.96;
+    var m = this.len * 1.7;
+    if (this.dir > 0 && this.x > W + m) { this.x = -m; this.y = rnd(0.08, 0.92); }
+    if (this.dir < 0 && this.x < -m) { this.x = W + m; this.y = rnd(0.08, 0.92); }
+    this.phase += 0.05 + Math.abs(this.speed) * 0.06;
+  };
+
+  function halfW(f, L) {
+    // rounded nose, fullest just behind the head, long taper to the tail,
+    // with a soft flare at the very end for the tail fin
+    var w = L * 0.145 * Math.pow(Math.sin(Math.PI * (0.07 + 0.86 * f)), 0.85);
+    if (f > 0.8) w *= 1 + Math.sin((f - 0.8) / 0.2 * Math.PI) * 0.55;
+    return Math.max(w, 0.4);
+  }
+
+  Koi.prototype.draw = function (t) {
+    var L = this.len, seg = 16, i, f;
+    var drift = (this.hue + t * 0.004) % 360;
+    ctx.save();
+    ctx.translate(this.x, this.y * H);
+    ctx.scale(this.dir, 1);
+    ctx.rotate(this.bank * 0.22 * this.dir);
+
+    var grad = ctx.createLinearGradient(-L / 2, 0, L / 2, 0);
+    grad.addColorStop(0.00, 'hsla(' + ((drift + 200) % 360) + ',95%,68%,' + this.alpha + ')');
+    grad.addColorStop(0.35, 'hsla(' + ((drift + 120) % 360) + ',95%,66%,' + this.alpha + ')');
+    grad.addColorStop(0.70, 'hsla(' + ((drift + 40) % 360) + ',95%,64%,' + this.alpha + ')');
+    grad.addColorStop(1.00, 'hsla(' + (drift % 360) + ',95%,66%,' + this.alpha + ')');
+
+    // pectoral fins, flapping gently
+    ctx.fillStyle = grad;
+    for (var s = -1; s <= 1; s += 2) {
+      ctx.save();
+      ctx.translate(L * 0.20, s * halfW(0.28, L) * 0.8);
+      ctx.rotate(s * (0.85 + Math.sin(this.phase * 0.9) * 0.18));
+      ctx.beginPath();
+      ctx.ellipse(-L * 0.07, 0, L * 0.11, L * 0.035, 0, 0, TAU);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // body: spine points with a travelling sine, amplitude growing to the tail
+    var left = [], right = [];
+    for (i = 0; i <= seg; i++) {
+      f = i / seg;
+      var bx = L / 2 - f * L;
+      var off = Math.sin(this.phase - f * 4.6) * Math.pow(f, 1.6) * L * 0.085;
+      var w = halfW(f, L);
+      left.push([bx, off - w]);
+      right.push([bx, off + w]);
+    }
+    ctx.beginPath();
+    ctx.moveTo(left[0][0], left[0][1]);
+    for (i = 1; i < left.length; i++) ctx.lineTo(left[i][0], left[i][1]);
+    for (i = right.length - 1; i >= 0; i--) ctx.lineTo(right[i][0], right[i][1]);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // sheen core — a thinner, paler pass down the spine for the holo gloss
+    ctx.beginPath();
+    for (i = 0; i <= seg; i++) {
+      f = i / seg;
+      var sx = L / 2 - f * L;
+      var soff = Math.sin(this.phase - f * 4.6) * Math.pow(f, 1.6) * L * 0.085;
+      var sw = halfW(f, L) * 0.38;
+      if (i === 0) ctx.moveTo(sx, soff - sw); else ctx.lineTo(sx, soff - sw);
+    }
+    for (i = seg; i >= 0; i--) {
+      f = i / seg;
+      var sx2 = L / 2 - f * L;
+      var soff2 = Math.sin(this.phase - f * 4.6) * Math.pow(f, 1.6) * L * 0.085;
+      var sw2 = halfW(f, L) * 0.38;
+      ctx.lineTo(sx2, soff2 + sw2);
+    }
+    ctx.closePath();
+    ctx.fillStyle = 'hsla(' + ((drift + 160) % 360) + ',100%,88%,' + (this.alpha * 0.5) + ')';
+    ctx.fill();
+    ctx.restore();
+  };
+
+  var school = [];
+  var n = (W < 640 ? 5 : 8);
+  for (var k = 0; k < n; k++) school.push(new Koi(k + 1));
+
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) {
+    ctx.globalCompositeOperation = 'lighter';
+    for (var j = 0; j < school.length; j++) school[j].draw(1200);
+    return;
+  }
+
+  function frame(t) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'lighter';
+    for (var j = 0; j < school.length; j++) { school[j].step(t); school[j].draw(t); }
+    ctx.globalCompositeOperation = 'source-over';
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
 </script>
 </body>
 </html>
