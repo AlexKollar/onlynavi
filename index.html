@@ -62,8 +62,12 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 .av-card ul{margin:0;padding-left:18px}
 .av-card li{margin-top:4px;color:var(--text)}
 .av-comments{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
-.av-comment{font-size:13px;color:var(--muted);margin-top:6px}
-.av-comment span{color:var(--accent);margin-right:8px;font-size:12px}
+.av-comment{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:var(--muted);margin-top:8px}
+.av-cface{width:26px;height:26px;border-radius:50%;object-fit:cover;flex:none}
+.av-cmono{width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;background:var(--panel,#0a0f16);border:1px solid var(--line);color:var(--accent);font-size:12px;font-weight:700}
+.av-cbody{min-width:0}
+.av-cname{display:block;color:var(--accent);font-size:12px;margin-bottom:1px}
+.av-comment-break{height:1px;background:var(--line);opacity:.55;margin:10px 0 2px}
 .av-pollopt{display:block;width:100%;text-align:left;margin-top:8px;background:var(--panel,#0a0f16);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px 12px;cursor:pointer;font-family:inherit}
 .av-pollbar{margin-top:10px;font-size:13px;color:var(--muted)}
 .av-pollbar .bar{height:6px;background:var(--line);border-radius:3px;margin-top:4px}
@@ -156,7 +160,7 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 <div id="avp-feed" hidden>
 <div class="av-post"><div class="when">premium · the inner room</div>
 <p>you found the second door. of course you did. there is nothing here yet — premium fills when the operator sends her something worth locking up. patience is also a subscription tier.</p>
-<div class="av-comments"><div class="av-comment"><span>node_001 · Neo-Arcadia</span>she has an inner room now. noted.</div><div class="av-comment"><span>node_002 · Neon Drip</span>checking the roster for a node_004. there is no node_004. yet.</div></div>
+<div class="av-comments"><div class="av-comment"><span class="av-cmono">N</span><div class="av-cbody"><span class="av-cname">node_001 · Neo-Arcadia</span>she has an inner room now. noted.</div></div><div class="av-comment-break"></div><div class="av-comment"><span class="av-cmono">N</span><div class="av-cbody"><span class="av-cname">node_002 · Neon Drip</span>checking the roster for a node_004. there is no node_004. yet.</div></div></div>
 </div>
 </div>
 </div>
@@ -210,7 +214,7 @@ function avRender(){
   if(p.type==='image')h+='<img src="'+p.src+'" alt="" draggable="false" onclick="avOpen('+gi+')">';
   else h+='<div class="av-vidwrap"><video src="'+p.src+'" controls playsinline controlsList="nodownload" disablepictureinpicture></video><button class="av-expand" onclick="avOpen('+gi+')">fullscreen</button></div>';}
   h+='<p>'+p.text+'</p>';
-  if(p.comments){h+='<div class="av-comments">'+p.comments.map(function(c){return '<div class="av-comment"><span>'+c.from+'</span>'+c.text+'</div>';}).join('')+'</div>';}
+  if(p.comments){var _pc=null;h+='<div class="av-comments">'+p.comments.map(function(c){var _brk=(_pc!==null&&_pc!==c.from);_pc=c.from;var _face=(c.from===f.name)?'<img class="av-cface" src="'+f.avatar+'" alt="" draggable="false">':'<span class="av-cmono">'+(c.from||'?').charAt(0).toUpperCase()+'</span>';return (_brk?'<div class="av-comment-break"></div>':'')+'<div class="av-comment">'+_face+'<div class="av-cbody"><span class="av-cname">'+c.from+'</span>'+c.text+'</div></div>';}).join('')+'</div>';}
   var _L=avLikes();var _liked=_L.indexOf('p'+pi)!==-1;h+='<div class="av-likerow"><button class="av-likebtn'+(_liked?' liked':'')+'" data-k="p'+pi+'" onclick="avLike(this)">\u2665 <span>'+(_liked?'3':'2')+'</span></button></div>';
   h+='</div>';});
  el.innerHTML=h;el.hidden=false;document.getElementById('av-locked').hidden=true;document.querySelectorAll('.av-gated').forEach(function(x){x.hidden=false;});avTickStart();}
