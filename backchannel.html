@@ -54,7 +54,7 @@ var h='';
 d.episodes.forEach(function(ep){var tops=(ep.topics||[]).map(function(t){return '<div class="bc-topic">\u00b7 '+esc(t)+'</div>';}).join('');
 h+='<div class="bc-card"><div class="bc-when">episode '+ep.n+' \u00b7 '+esc(ep.date)+'</div><div class="bc-title">'+esc(ep.title)+'</div>'+(ep.audio?'<audio controls preload="none" src="'+esc(ep.audio)+'"></audio>':'')+'<p style="margin:6px 0">'+esc(ep.post)+'</p>'+tops+'<button type="button" class="bc-drop" onclick="bcToggle(this)">the log \u25be</button><div class="bc-details" style="display:none"><div class="bc-log">'+paras(ep.log)+'</div></div></div>';});
 list.innerHTML=h;}
-if(window.fetch){fetch('talks.json').then(function(r){return r.json();}).then(render).catch(function(){});}})();
+if(window.fetch){fetch('talks.json?h='+Math.floor(Date.now()/36e5)).then(function(r){return r.json();}).then(render).catch(function(){});}})();
 </script>
 </body>
 </html>
