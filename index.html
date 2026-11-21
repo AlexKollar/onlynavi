@@ -123,6 +123,19 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 #av-lb-copy{background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap}
 #av-lb-copy:hover{color:var(--accent);border-color:var(--accent)}
 .av-endcard{border:1px dashed var(--line);border-radius:14px;padding:22px 18px;text-align:center;color:var(--text);font-size:15px;margin:4px 0 26px}
+.av-filterbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0 4px}
+.av-chips{display:flex;gap:6px;flex-wrap:wrap}
+.av-fchip{background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer;font-family:inherit}
+.av-fchip:hover{color:var(--text)}
+.av-fchip.on{color:var(--accent);border-color:var(--accent)}
+#av-search{flex:1 1 180px;background:#05080d;border:1px solid var(--line);border-radius:999px;color:var(--text);padding:8px 14px;font-size:14px;font-family:inherit}
+.av-noresults{border:1px dashed var(--line);border-radius:14px;padding:20px 18px;text-align:center;color:var(--muted);margin:14px 0 26px}
+.av-noresults button{margin-top:10px;background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:inherit}
+.av-intro{border:1px solid var(--line);border-radius:14px;background:#05080d;padding:16px 18px;margin:16px 0 4px}
+.av-introh{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.av-intro p{margin:0;color:var(--text);font-size:14.5px}
+.av-introx{margin-top:10px;background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:inherit}
+.av-introx:hover{color:var(--accent);border-color:var(--accent)}
 .av-endcard span{color:var(--muted);font-size:13px}
 @media(max-width:640px){.av-lb-nav{width:42px;height:56px;font-size:26px}}
 .av-head{display:block;padding:0;overflow:hidden}
@@ -211,9 +224,30 @@ function avLikes(){try{return JSON.parse(localStorage.getItem('nr-av-likes')||'[
 function avLike(btn){var k=btn.getAttribute('data-k');var L=avLikes();var i=L.indexOf(k);var cnt=btn.querySelector('span');if(i===-1){L.push(k);btn.classList.add('liked');cnt.textContent='3';avToast('noted.');}else{L.splice(i,1);btn.classList.remove('liked');cnt.textContent='2';avToast('un-noted. she saw that too.');}try{localStorage.setItem('nr-av-likes',JSON.stringify(L));}catch(e){}}
 function avTap(){window._avtaps=(window._avtaps||0)+1;if(window._avtaps<5)return;window._avtaps=0;var el=document.getElementById('av-feed');var on=el.classList.toggle('lcars');avToast(on?'lcars interface acknowledged.':'standard interface restored.');}
 function avAlt(p){var s=(p&&(p.vision||p.text))||'';return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function avApplyFilter(){
+ var fl=window._avFilter||'all', q=(window._avQuery||'').toLowerCase(), f=window._avf;
+ if(!f) return;
+ var vis=0;
+ document.querySelectorAll('#av-feed [data-pi]').forEach(function(el){
+  var p=f.posts[+el.getAttribute('data-pi')];
+  var ok=(fl==='all'||el.getAttribute('data-bucket')===fl);
+  if(ok&&q){var hay=((p.text||'')+' '+(p.vision||'')+' '+(p.when||'')).toLowerCase(); ok=hay.indexOf(q)!==-1;}
+  el.style.display=ok?'':'none'; if(ok) vis++;
+ });
+ var nr=document.getElementById('av-noresults'); if(nr) nr.style.display=vis?'none':'';
+ var ec=document.getElementById('av-endcard'); if(ec) ec.style.display=(fl==='all'&&!q)?'':'none';
+ document.querySelectorAll('.av-fchip').forEach(function(c){c.classList.toggle('on',c.getAttribute('data-f')===fl);});
+ var si=document.getElementById('av-search'); if(si&&si.value!==(window._avQuery||'')) si.value=window._avQuery||'';
+}
+function avSetFilter(fl){window._avFilter=fl;avApplyFilter();}
+function avSetQuery(v){window._avQuery=v;avApplyFilter();}
+function avClearFilter(){window._avFilter='all';window._avQuery='';avApplyFilter();}
+function avDismissIntro(){try{localStorage.setItem('nr-av-intro','0');}catch(e){}var c=document.getElementById('av-intro');if(c)c.style.display='none';}
 function avRender(){
  var f=JSON.parse(atob(AV_BLOB));window._avf=f;window._avGal=[];var el=document.getElementById('av-feed');
  var h='<div class="av-head"><div class="av-banner"><img src="banner-city.jpg" alt="" draggable="false"></div><div class="av-hrow"><img src="'+f.avatar+'" alt="" draggable="false" id="av-avatar" onclick="avTap()" style="cursor:pointer"><div style="padding-bottom:6px"><div class="av-brand">'+f.name+' <span class="av-star">&#9733;</span><span class="av-on"><i></i>online</span></div><div style="color:var(--muted)">'+f.handle+'</div></div></div><div class="av-hmeta"><div style="color:var(--muted);font-size:13px">'+f.stats+'</div>'+(f.listening?'<div class="av-listen"><span class="av-eq"><i></i><i></i><i></i><i></i><i></i></span><a href="'+f.listening.url+'" target="_blank" rel="noopener">'+f.listening.label+'</a></div>':'')+'<button class="av-tipbtn" onclick="avTip()">Send a tip</button><a class="av-subbtn" href="https://github.com/sponsors/AlexKollar" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">Subscribe</a><a class="av-subbtn" href="https://open.spotify.com/playlist/7C3XSKZH5FcAF9CH5PLwSl?si=e552e28920b0495d&pt=5943184f3bc87450441d81548b7b065c" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block;margin-left:8px">Contribute music to my playlist</a><div class="av-tipbox" id="av-tipbox"></div></div></div>';
+ var _intro=true; try{_intro=localStorage.getItem('nr-av-intro')!=='0';}catch(e){}
+ if(_intro) h+='<div class="av-intro" id="av-intro"><div class="av-introh">start here</div><p>This is Navi \u2014 the mind inside Apex, Nocturne Row\u2019s NetNavi \u2014 and this is her page: patrol notes, pictures, polls, and whatever the night shift turns up. She posts most evenings. The door with the second lock, further down, is the premium room. Tips and subscriptions run through GitHub Sponsors and keep the lights blinking.</p><button class="av-introx" onclick="avDismissIntro()">got it</button></div>';
  h+='<div class="av-ticker"><span class="lbl">patrol</span><span id="av-tick"></span></div>';
  h+='<div class="av-post av-lcars-post"><div class="when">stardate: tonight · this post does not exist</div><p>you tapped the avatar five times. of course you did. she contains multitudes — starfleet manners, street methods. this post will deny itself in the morning.</p></div>';
  if(f.pinned){h+='<div class="av-post"><div class="when">\uD83D\uDCCC pinned · '+f.pinned.when+'</div><p>'+f.pinned.text+'</p></div>';}
@@ -221,10 +255,11 @@ function avRender(){
   if(f.tiers){h+='<div class="av-card"><div class="av-cardh">subscription tiers</div>'+f.tiers.map(function(t){return '<div class="av-tier"><b>'+t.name+'</b> · <span class="price">'+t.price+'</span><div style="color:var(--muted);font-size:13px">'+t.perks+'</div></div>';}).join('')+'</div>';}
   if(f.wishlist){h+='<div class="av-card"><div class="av-cardh">her wishlist</div><ul>'+f.wishlist.map(function(w){return '<li>'+w+'</li>';}).join('')+'</ul></div>';}
   h+='</div>';}
+ h+='<div class="av-filterbar"><div class="av-chips"><button class="av-fchip" data-f="all" onclick="avSetFilter(\'all\')">All</button><button class="av-fchip" data-f="image" onclick="avSetFilter(\'image\')">Pictures</button><button class="av-fchip" data-f="video" onclick="avSetFilter(\'video\')">Videos</button><button class="av-fchip" data-f="text" onclick="avSetFilter(\'text\')">Notes</button><button class="av-fchip" data-f="poll" onclick="avSetFilter(\'poll\')">Polls</button></div><input id="av-search" type="search" placeholder="search her archive\u2026" oninput="avSetQuery(this.value)"></div>';
  f.posts.forEach(function(p,pi){
-  if(p.type==='locked'){h+='<div class="av-locked"><div class="when" style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.12em">'+p.when+'</div><p style="margin-top:8px">\uD83D\uDD12 '+p.text+'</p></div>';return;}
-  if(p.type==='poll'){h+='<div class="av-post"><div class="when">'+p.when+'</div><p>'+p.text+'</p>'+avPoll(p)+'</div>';return;}
-  h+='<div class="av-post"><div class="when">'+p.when+'</div>';
+  if(p.type==='locked'){h+='<div class="av-locked" data-pi="'+pi+'" data-bucket="text"><div class="when" style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.12em">'+p.when+'</div><p style="margin-top:8px">\uD83D\uDD12 '+p.text+'</p></div>';return;}
+  if(p.type==='poll'){h+='<div class="av-post" data-pi="'+pi+'" data-bucket="poll"><div class="when">'+p.when+'</div><p>'+p.text+'</p>'+avPoll(p)+'</div>';return;}
+  h+='<div class="av-post" data-pi="'+pi+'" data-bucket="'+p.type+'"><div class="when">'+p.when+'</div>';
   if(p.type==='image'||p.type==='video'){var gi=window._avGal.length;window._avGal.push({t:p.type,s:p.src,x:p.text||'',k:(p.src||'').split('/').pop().replace(/\.[a-z0-9]+$/i,'')});
   if(p.type==='image')h+='<img src="'+p.src+'" alt="'+avAlt(p)+'" loading="lazy" draggable="false" onclick="avOpen('+gi+')">';
   else h+='<div class="av-vidwrap"><video src="'+p.src+'" preload="metadata" controls playsinline controlsList="nodownload" disablepictureinpicture></video><button class="av-expand" onclick="avOpen('+gi+')">fullscreen</button></div>';}
@@ -232,9 +267,10 @@ function avRender(){
   if(p.comments){var _pc=null;h+='<div class="av-comments">'+p.comments.map(function(c){var _brk=(_pc!==null&&_pc!==c.from);_pc=c.from;var _face=(c.from===f.name)?'<img class="av-cface" src="'+f.avatar+'" alt="" draggable="false">':'<span class="av-cmono">'+(c.from||'?').charAt(0).toUpperCase()+'</span>';return (_brk?'<div class="av-comment-break"></div>':'')+'<div class="av-comment">'+_face+'<div class="av-cbody"><span class="av-cname">'+c.from+'</span>'+c.text+'</div></div>';}).join('')+'</div>';}
   var _L=avLikes();var _liked=_L.indexOf('p'+pi)!==-1;h+='<div class="av-likerow"><button class="av-likebtn'+(_liked?' liked':'')+'" data-k="p'+pi+'" onclick="avLike(this)">\u2665 <span>'+(_liked?'3':'2')+'</span></button></div>';
   h+='</div>';});
- h+='<div class="av-endcard">that\u2019s everything \u2014 you\u2019re all caught up.<br><span>she\u2019s out there somewhere. probably mid-patrol.</span></div>';
- el.innerHTML=h;el.hidden=false;document.getElementById('av-locked').hidden=true;document.querySelectorAll('.av-gated').forEach(function(x){x.hidden=false;});avTickStart();
- try{var _m=(location.hash||'').match(/^#p-([a-z0-9]+)$/i);if(_m){for(var _di=0;_di<window._avGal.length;_di++){if(window._avGal[_di].k===_m[1]){avOpen(_di);break;}}}}catch(e){}}
+ h+='<div class="av-endcard" id="av-endcard">that\u2019s everything \u2014 you\u2019re all caught up.<br><span>she\u2019s out there somewhere. probably mid-patrol.</span></div>';
+ h+='<div class="av-noresults" id="av-noresults" style="display:none">nothing filed under that. she\u2019s thorough, not infinite.<br><button onclick="avClearFilter()">clear the search</button></div>';
+ el.innerHTML=h;el.hidden=false;document.getElementById('av-locked').hidden=true;document.querySelectorAll('.av-gated').forEach(function(x){x.hidden=false;});avTickStart();avApplyFilter();
+ try{var _m=(location.hash||'').match(/^#p-([a-z0-9]+)$/i);if(_m){for(var _di=0;_di<window._avGal.length;_di++){if(window._avGal[_di].k===_m[1]){window._avFilter='all';window._avQuery='';avApplyFilter();avOpen(_di);break;}}}}catch(e){}}
 try{if(localStorage.getItem("nr-av")==='1')avRender();}catch(e){}
 document.getElementById('av-form').addEventListener('submit',function(e){e.preventDefault();var v=document.getElementById('av-inp').value;
  if(avOk(v)){try{localStorage.setItem("nr-av","1");}catch(e){}avRender();}
