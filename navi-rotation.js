@@ -30,7 +30,7 @@ var NAVI_PLAYLIST_URL = "https://open.spotify.com/playlist/7C3XSKZH5FcAF9CH5PLwS
 
 var NAVI_PLAYLIST = {
   epoch: 1795222078, // epoch = the moment v0.6.12e published (Alex's ruling, #346) — frozen, never re-stamped
-  cycleSeconds: 4927,
+  cycleSeconds: 9696,
   tracks: [
     { title: "Gone", artist: "SIERRA VEINS", seconds: 216, spotify: "2hdhMoaEpzenU9vGtAuWwF" },
     { title: "Magnum Bullets", artist: "Night Runner, Dan Avidan", seconds: 243, spotify: "2FGWXLeSSVWZlf7sh5A6te" },
@@ -52,7 +52,25 @@ var NAVI_PLAYLIST = {
     { title: "Satisfy", artist: "NERO", seconds: 244, spotify: "4FoHmnlQPesxK7ZT1QCnd6" },
     { title: "Neon Rain", artist: "Paradise Walk", seconds: 256, spotify: "79DXvZtlrAN6AIb4vtQ7tR" },
     { title: "Paradise - Original Edit", artist: "Cyberslut", seconds: 284, spotify: "0dF3xLXJXkrIH8wDstqdEx" },
-    { title: "Playing With Fire", artist: "Cyberslut", seconds: 213, spotify: "0aTjkpJ2U00RCxoeBqbFgc" }
+    { title: "Playing With Fire", artist: "Cyberslut", seconds: 213, spotify: "0aTjkpJ2U00RCxoeBqbFgc" },
+    { title: "Blade Runner 2049", artist: "Synthwave Goose", seconds: 228, spotify: "0FGUeu7DHu01vE9118FKd8" },
+    { title: "Blade Runner Blues", artist: "Vangelis", seconds: 534, spotify: "575blCgesVtCu0HEYaIcas" },
+    { title: "Kill the Messenger", artist: "Rezodrone, The Cartesian Duelists", seconds: 209, spotify: "68yx2Beo1RjNVZnqJLSLdI" },
+    { title: "Major Crimes", artist: "HEALTH, Window Weather", seconds: 213, spotify: "3nh5RSXnRSHWuQbOJvQr0g" },
+    { title: "Let You Down", artist: "Dawid Podsiad\u0142o", seconds: 230, spotify: "24wT9mkalLcUIDt9rkpYJJ" },
+    { title: "Night City - R E L 's Version", artist: "R E L", seconds: 194, spotify: "00QOvISwRs4IG1WcAaSS12" },
+    { title: "Neo-Tokyo - Dance With The Dead Remix", artist: "Scandroid, Dance With the Dead", seconds: 352, spotify: "249s2jlRWK7eIS1LE3qp5G" },
+    { title: "LED Spirals - Extended Version", artist: "Le Castle Vania", seconds: 196, spotify: "3RxNoBUmsatoQ86dAhV92v" },
+    { title: "John Wick Mode", artist: "Le Castle Vania", seconds: 187, spotify: "2zwcnaxahJOnYwG0H6tXTz" },
+    { title: "ANTAGONIST", artist: "ALEX, TOKYO ROSE, THE AKUMA", seconds: 332, spotify: "7b9IARaKDslL1JMtT7Ovlu" },
+    { title: "inner universe", artist: "Origa", seconds: 294, spotify: "0UuMRmKDZSuSlUbTg5F3MG" },
+    { title: "rise", artist: "Origa", seconds: 328, spotify: "2Uyz4r0IwXlZIVbkTEASPk" },
+    { title: "player", artist: "Origa, Heartsdales", seconds: 343, spotify: "6V7zJOoCyx2LUECNqYFrhQ" },
+    { title: "lithium flower", artist: "Scott Matthew", seconds: 203, spotify: "6IouGBVgNIsrRko3llWdZ8" },
+    { title: "Obsession", artist: "See-Saw", seconds: 271, spotify: "1oiPuBrYrEv3XFjwahsYlY" },
+    { title: "Kiss me sunlights", artist: "Heart of Air", seconds: 229, spotify: "0YdKqjfAgGFa9NccgZOTwG" },
+    { title: "Chain", artist: "BACK-ON", seconds: 220, spotify: "4c54eOtyzV55BsLo2mUwyd" },
+    { title: "Eternal Youth", artist: "R\u016eDE", seconds: 206, spotify: "0ytvsZOerGzUWfHXVT2Sgy" }
   ]
 };
 
