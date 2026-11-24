@@ -30,6 +30,11 @@ main{max-width:880px;margin:0 auto}
 .av-vprev{left:2px}
 .av-vnext{right:2px}
 .av-vclose{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(5,8,13,.85);color:var(--text);font-size:17px;cursor:pointer;z-index:2}
+.av-tile.av-new{box-shadow:0 0 0 2px var(--accent),0 0 16px rgba(45,212,191,.35)}
+#av-music{position:fixed;left:0;right:0;bottom:0;z-index:15;background:#04070c;border-top:1px solid var(--line)}
+#av-music iframe{width:100%;height:152px;border:0;display:block}
+#av-music-btn{position:fixed;right:12px;bottom:12px;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:rgba(5,8,13,.88);color:var(--muted);font-size:20px;cursor:pointer;z-index:16}
+#av-music-btn.on{color:#04121a;background:var(--accent);border-color:var(--accent);bottom:164px}
 </style>
 </head>
 <body>
@@ -43,25 +48,48 @@ main{max-width:880px;margin:0 auto}
 <div id="av-view-stage"></div>
 <button class="av-vnav av-vnext" onclick="avRoomNav(1)" aria-label="Next">&#8250;</button>
 </div>
+<button id="av-music-btn" onclick="avRoomMusic()" aria-label="Her rotation" hidden>&#9834;</button>
+<div id="av-music" hidden></div>
 <script>
 /* The inner room. Unlisted, and it checks the door before it
    renders: the flag is spoken in the Starboard on her page, and
    only there. The gallery itself is just her line and the grid —
    the sets live in the same blob as everything else on her page,
    fetched fresh so this room never drifts from the record. */
-var _avRoomList=[];var _avRoomIdx=0;
+var _avRoomList=[];var _avRoomIdx=0;var _avRoomF=null;
 function avRoomRender(f){
   var box=document.getElementById('av-room');
+  _avRoomF=f;
   _avRoomList=(f.premium||[]).filter(function(p){return p.type==='image'||p.type==='video';});
+  var seen=0,has=false,maxTs=0;
+  try{var sv=localStorage.getItem('nr-avp-seen');if(sv!==null){seen=+sv;has=true;}}catch(e){}
+  _avRoomList.forEach(function(p){if((p.ts||0)>maxTs)maxTs=p.ts||0;});
   var h='<div class="av-roomh"><p>Congratulations! You earned it! I won\u2019t tell if you won\u2019t.</p><span>\u2014 Navi</span></div><div class="av-grid">';
   _avRoomList.forEach(function(p,i){
-    if(p.type==='image')h+='<div class="av-tile" onclick="avRoomOpen('+i+')"><img src="'+p.src+'" alt="" loading="lazy" draggable="false"></div>';
-    else h+='<div class="av-tile" onclick="avRoomOpen('+i+')"><video src="'+p.src+'" muted loop playsinline autoplay preload="metadata"></video></div>';
+    var cls='av-tile'+((has&&(p.ts||0)>seen)?' av-new':'');
+    if(p.type==='image')h+='<div class="'+cls+'" onclick="avRoomOpen('+i+')"><img src="'+p.src+'" alt="" loading="lazy" draggable="false"></div>';
+    else h+='<div class="'+cls+'" onclick="avRoomOpen('+i+')"><video src="'+p.src+'" muted loop playsinline autoplay preload="metadata"></video></div>';
   });
   h+='</div>';
   box.innerHTML=h;
+  try{localStorage.setItem('nr-avp-seen',String(maxTs));}catch(e){}
+  var mb=document.getElementById('av-music-btn');if(mb)mb.hidden=false;
 }
 window.avRoomRender=avRoomRender;
+function avRoomMusic(){
+  var bar=document.getElementById('av-music');var btn=document.getElementById('av-music-btn');
+  if(!bar||!btn)return;
+  if(bar.hidden){
+    var url=(_avRoomF&&_avRoomF.listening&&_avRoomF.listening.url)||'';
+    var m=url.match(/playlist\/([A-Za-z0-9]+)/);
+    if(!m)return;
+    bar.innerHTML='<iframe src="https://open.spotify.com/embed/playlist/'+m[1]+'?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Her rotation"></iframe>';
+    bar.hidden=false;btn.classList.add('on');
+  }else{
+    bar.hidden=true;bar.innerHTML='';btn.classList.remove('on');
+  }
+}
+window.avRoomMusic=avRoomMusic;
 function avRoomShow(){
   var p=_avRoomList[_avRoomIdx];if(!p)return;
   var st=document.getElementById('av-view-stage');
