@@ -53,7 +53,8 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 .avsb-form{display:flex;gap:6px;align-items:baseline;margin-top:6px;font-size:16px}
 .avsb-form input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:#e8f4f1;font:inherit;padding:0}
 .avsb-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.avsb-chips button{background:transparent;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;padding:3px 10px;cursor:pointer}
+.avsb-chips button{background:transparent;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;min-height:36px;padding:6px 14px;cursor:pointer}
+.avsb-chips button:active{background:var(--accent);color:#04121a;border-color:var(--accent)}
 .av-listen{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px}
 .av-listen a{color:var(--accent);text-decoration:none}
 .av-listen a:hover{text-decoration:underline}
@@ -142,9 +143,9 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 #av-lb-copy{background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap}
 #av-lb-copy:hover{color:var(--accent);border-color:var(--accent)}
 .av-endcard{border:1px dashed var(--line);border-radius:14px;padding:22px 18px;text-align:center;color:var(--text);font-size:15px;margin:4px 0 26px}
-.av-vtoggle{margin-left:auto;display:flex;gap:6px}
-.av-vbtn{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:6px 13px;font-size:13px;cursor:pointer}
-.av-vbtn.on{background:var(--accent);color:#04121a;border-color:var(--accent);font-weight:700}
+.av-vtoggle{order:2;display:flex;gap:0;border:1px solid var(--line);border-radius:999px;overflow:hidden;height:40px;flex:0 0 auto}
+.av-vbtn{border:none;background:transparent;color:var(--muted);border-radius:0;padding:0 16px;height:38px;font-size:13px;cursor:pointer;font-family:inherit}
+.av-vbtn.on{background:var(--accent);color:#04121a;font-weight:700}
 .av-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0 22px}
 @media(max-width:560px){.av-grid{grid-template-columns:repeat(2,1fr)}}
 .av-tile{position:relative;border-radius:10px;overflow:hidden;cursor:pointer;background:rgba(5,8,13,.88);aspect-ratio:1}
@@ -173,12 +174,13 @@ body{background:var(--bg);color:var(--text);font-family:ui-sans-system,system-ui
 .av-arc .av-arch{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
 .av-arc img{width:100%;border-radius:10px;display:block}
 .av-arc p{margin:10px 0 0}
-.av-filterbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0 4px}
-.av-chips{display:flex;gap:6px;flex-wrap:wrap}
-.av-fchip{background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer;font-family:inherit}
+.av-filterbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0 4px}
+.av-chips{order:3;flex:1 1 100%;display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.av-chips::-webkit-scrollbar{display:none}
+.av-fchip{flex:0 0 auto;background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;height:34px;padding:0 14px;font-size:13px;cursor:pointer;font-family:inherit}
 .av-fchip:hover{color:var(--text)}
-.av-fchip.on{color:var(--accent);border-color:var(--accent)}
-#av-search{flex:1 1 180px;background:rgba(5,8,13,.88);border:1px solid var(--line);border-radius:999px;color:var(--text);padding:8px 14px;font-size:14px;font-family:inherit}
+.av-fchip.on{background:var(--accent);color:#04121a;border-color:var(--accent);font-weight:700}
+#av-search{order:1;flex:1 1 180px;height:40px;background:rgba(5,8,13,.88);border:1px solid var(--line);border-radius:999px;color:var(--text);padding:0 16px;font-size:16px;font-family:inherit}
 .av-noresults{border:1px dashed var(--line);border-radius:14px;padding:20px 18px;text-align:center;color:var(--muted);margin:14px 0 26px}
 .av-noresults button{margin-top:10px;background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:inherit}
 .av-intro{border:1px solid var(--line);border-radius:14px;background:rgba(5,8,13,.88);padding:16px 18px;margin:16px 0 4px}
@@ -557,6 +559,11 @@ try{if(localStorage.getItem("nr-avp")==='1')avpRender();}catch(e){}
   requestAnimationFrame(frame);
 })();
 
+</script>
+<script>
+/* Installed web apps hold pages too long. The worker keeps page
+   loads network-first so a publish reaches the app on next launch. */
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){});}
 </script>
 </body>
 </html>
